@@ -11,7 +11,8 @@ This is a Streamlit app for analyzing and visualizing data from a microgrid mode
 - seaborn
 - scikit-learn
 
-To install the required packages, run the following command:<html>
+To install the required packages, run the following command:
+<html>
    <head>
      <title>pip install -r requirements.txt</title>
    </head>
