@@ -12,7 +12,7 @@ This is a Streamlit app for analyzing and visualizing data from a microgrid mode
 - scikit-learn
 
 ## Installation
- >pip install -r requirements.txt</title>
+ >pip install -r requirements.txt
 ## Navigate to the directory that you have saved the project and run the command:
 >streamlit run app.py
 ## Data
