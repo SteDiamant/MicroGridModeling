@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 from sklearn.cluster import KMeans
+import datetime
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -48,6 +49,21 @@ def clustering(df):
     return df
 def count_clusters(df):
     return df['clustering'].value_counts()
+def connect_car1(df,start_date,end_date,start_time,end_time):
+    # Your code to connect to Car1 goes here
+    st.write('Car1 connected!')
+    datetime_obj_start = datetime.datetime.combine(start_date, start_time)
+    datetime_obj_end = datetime.datetime.combine(end_date, end_time)
+    time_delta = datetime_obj_end - datetime_obj_start
+    st.write(f"starting date:{datetime_obj_start}")
+    st.write(f"end time:{datetime_obj_end}")
+    st.write(f"ChaRgeTime:{time_delta}")
+
+
+
+
+
+
 def main():
     # Set page title
     st.set_page_config(page_title='My Streamlit App')
@@ -72,18 +88,63 @@ def main():
         end_date = st.sidebar.date_input('End date', value=df['Dates'].max())
         filtered_df = df[(df['Dates'] >= pd.to_datetime(start_date)) & (df['Dates'] <= pd.to_datetime(end_date))]
 
-        # Display a histogram of one column
+        st.subheader('Histogram and Average')
         column = st.sidebar.selectbox('Select a column', df.columns)
-        plt.xticks(rotation=90)
-        sns.lineplot(data=filtered_df, x=filtered_df.index,y=column)
-        st.pyplot()
 
-        # Display the average
-        ave = calculate_average_per_day(filtered_df, column)
-        plt.xticks(rotation=90)
-        sns.lineplot(data=ave, x=ave.index,y=column)
-        st.pyplot()
-        st.sidebar.write(ave)
+        # Create two columns of equal width
+        col1, col2 = st.columns(2)
+
+        # Display histogram in the first column
+        with col1:
+
+            st.subheader('Histogram')
+            plt.xticks(rotation=90)
+            sns.lineplot(data=filtered_df, x=filtered_df.index, y=column)
+            st.pyplot()
+
+
+            st.subheader('EV Charging Information')
+            # Create form for EV_i title
+            with st.expander('EV_1'):
+                start_date1 = st.date_input('StartDate1')
+                start_time1 = st.time_input('StartTime1')
+                end_date1 = st.date_input('EndDat1e')
+                end_time1 = st.time_input('EndTime1')
+                ave_kw1 = st.number_input('Average KW/H1', value=0, step=1)
+                st.button('Connect Car1',on_click=connect_car1(filtered_df,start_date1,end_date1,start_time1,end_time1))
+            with st.expander('EV_2'):
+                start_date2 = st.date_input('StartDate2')
+                start_time2 = st.time_input('StartTime2')
+                end_date2 = st.date_input('EndDate2')
+                end_time2 = st.time_input('EndTime2')
+                ave_kw2 = st.number_input('Average KW/H2', value=0, step=1)
+                st.button('Connect Car2',on_click=connect_car1(filtered_df,start_date2,end_date2,start_time2,end_time2))
+
+
+        # Display average and sidebar in the second column
+        
+        with col2:
+            st.subheader('Average')
+            ave = calculate_average_per_day(filtered_df, column)
+            plt.xticks(rotation=90)
+            sns.lineplot(data=ave, x=ave.index, y=column)
+            st.pyplot()
+            
+            st.subheader('EV Charging Information')
+            with st.expander('EV_3'):
+                start_date3 = st.date_input('StartDate3')
+                start_time3 = st.time_input('StartTime3')
+                end_date3 = st.date_input('EndDate3')
+                end_time3 = st.time_input('EndTime3')
+                ave_kw3 = st.number_input('Average KW/H3', value=0, step=1)
+                st.button('Connect Car3',on_click=connect_car1(filtered_df,start_date3,end_date3,start_time3,end_time3))
+            with st.expander('EV_4'):
+                start_date4 = st.date_input('StartDate4')
+                start_time4 = st.time_input('StartTime4')
+                end_date4 = st.date_input('EndDate4')
+                end_time4 = st.time_input('EndTime4')
+                ave_kw4 = st.number_input('Average KW/H4', value=0, step=1)
+                st.button('Connect Car4',on_click=connect_car1(filtered_df,start_date4,end_date4,start_time4,end_time4))
 
     # Imbalance analysis
     elif choice == 'Imbalance Analysis':
