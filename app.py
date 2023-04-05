@@ -137,7 +137,9 @@ class ProfileGenerator():
         time_start, discharge_start, discharge_end, date_start, date_end = ProfileGenerator.estimate_discharging_hours(days, day)
         date_range = pd.date_range(start=datetime.combine(date_start, discharge_start), end=datetime.combine(date_end, discharge_end), freq='15min')
         discharge_profile = pd.DataFrame(index=date_range)
-        discharge_profile['EV Demand (W)'] = pd.Series(data=MAX_NO_CARS*np.random.randint(low=-7000, high=-6400, size=len(date_range)), index=discharge_profile.index)
+        limit_low=days[DAY]['TotalDemand'].min()
+        print(limit_low)
+        discharge_profile['EV Demand (W)'] = pd.Series(data=MAX_NO_CARS*np.random.randint(low=-limit_low/2, high=(-limit_low/2+1), size=len(date_range)), index=discharge_profile.index)
         discharge_profile.index.name = 'Time'
         return discharge_profile
 
