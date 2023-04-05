@@ -60,8 +60,12 @@ class PVCalculator():
         return df
 
 class Identification():
-
-
+    
+    @staticmethod
+    def count_true_false(df):
+        true_count = df['Imbalance_check'].value_counts()[True]
+        false_count = df['Imbalance_check'].value_counts()[False]
+        return true_count, false_count
 
     @staticmethod
     def max_production(df, amount):
@@ -75,6 +79,20 @@ class Identification():
         top_max_production_values = abs(top_max_production['General Demand (W)'])
         top_max_production_time = top_max_production['Time']
         return top_max_production_values.tolist(), top_max_production_time.tolist()
+    @staticmethod
+    def imbalance_check(days):
+        df=days[DAY]
+        st_time,end_time,st_date,end_date = ProfileGenerator.estimate_charging_hours(days,DAY)
+        df_slice = df.loc[(df.index.date >= st_date) & (df.index.date <= end_date) & (df.index.time >= st_time) & (df.index.time <= end_time)]
+  
+        # Check if there is any imbalance in the sliced DataFrame
+        if df_slice['Imbalance_check'].any():
+            # If there is an imbalance, return False
+            return False
+        else:
+            # If there is no imbalance, print the possible charging start time and date and return True
+            #print(f"Possible Charging starts at:{st_time} - {end_time} Date:{st_date}")
+            return True
 
 class ProfileGenerator():
 
@@ -195,18 +213,12 @@ class ComparisonTable:
         # display the plot
         plt.show()
 
+        
+    
+
+
+
 
 df=DataLoader.load_data()
 df= ImbalanceCalculator.calculate_imbalance(df)
 days = DateTimeSplitter().split_dataframe_by_day(df)
-#print(DateTimeSplitter().split_datetime(days[1]))
-#print(Identification.max_demand(df,10))
-charge_profile=ProfileGenerator.create_charge_profile(days,DAY)
-day_charge=(DatasetMerger.merge_datasets(days[DAY], charge_profile))
-discharge_profile=ProfileGenerator.create_discharge_profile(days,DAY)
-day_discharge=DatasetMerger.merge_datasets(days[DAY], discharge_profile)
-charge_discharge = pd.concat([charge_profile, discharge_profile])
-data=DatasetMerger.merge_datasets(days[DAY],charge_discharge)
-#comp_table = ComparisonTable(days[DAY], day_discharge)
-#comp_table.plot()
-Plotter.plot(data)
