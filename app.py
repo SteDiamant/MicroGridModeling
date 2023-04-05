@@ -280,17 +280,17 @@ def main():
     
     
     data1=days[DAY]
-    st.title("Without EV")
+    st.title(f"Without EV ")
     msg1=int(metricsCalculator.calculate_area(data1))
     plot1=plot_single(data1)
     st.pyplot(plot1)
-    st.write("Area under the curve",str(msg1))
+    st.write("Imbalance area",str(msg1))
         
-    st.title("With EV")
+    st.title(f"With EV{MAX_NO_CARS}")
     plot2=plot_single(data)
     msg2=int(metricsCalculator.calculate_area(data))
     st.pyplot(plot2)
-    st.write("Area under the curve", str(msg2))
+    st.write("Imbalance area", str(msg2))
         
     st.write('Ev Integration Results:',(msg1 - msg2))
     st.title("Daily Plot")
