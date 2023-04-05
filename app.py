@@ -173,7 +173,7 @@ class Plotter:
         except:
             pass
         # create a line chart of the demand and PV columns
-        fig, ax = plt.subplots(figsize=(14, 8))
+        fig, ax = plt.subplots(figsize=(16, 8))
         ax.plot(df[['TotalDemand', 'EV Demand (W)',  'PV (W)','Imbalnace']])
         ax.set_xlabel('Time')
         ax.set_ylabel('Power (W)')
@@ -278,24 +278,21 @@ def main():
     #comp_table.plot()
     #st.pyplot(comp_table.plot())
     
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        data1=days[DAY]
-        st.title("Without EV")
-        msg1=int(metricsCalculator.calculate_area(data1))
-        plot1=plot_single(data1)
-        st.pyplot(plot1)
-        st.write("Area under the curve",str(msg1))
+    
+    data1=days[DAY]
+    st.title("Without EV")
+    msg1=int(metricsCalculator.calculate_area(data1))
+    plot1=plot_single(data1)
+    st.pyplot(plot1)
+    st.write("Area under the curve",str(msg1))
         
-    with col2:
-        st.title("With EV")
-        plot2=plot_single(data)
-        msg2=int(metricsCalculator.calculate_area(data))
-        st.pyplot(plot2)
-        st.write("Area under the curve", str(msg2))
+    st.title("With EV")
+    plot2=plot_single(data)
+    msg2=int(metricsCalculator.calculate_area(data))
+    st.pyplot(plot2)
+    st.write("Area under the curve", str(msg2))
         
     st.write('Ev Integration Results:',(msg1 - msg2))
-
     st.title("Daily Plot")
 
     start=st.selectbox("StartDate", list(range(1, 362)))
