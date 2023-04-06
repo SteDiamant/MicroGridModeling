@@ -77,13 +77,13 @@ class Identification():
         top_max_production = df.nsmallest(amount, 'PV (W)')
         top_max_production_values = abs(top_max_production['PV (W)'])
         top_max_production_time = top_max_production['Time']
-        return (top_max_production_values.tolist(), top_max_production_time.tolist())
+        return top_max_production_values, top_max_production_time
     @staticmethod
     def max_demand(df, amount):
         top_max_production = df.nlargest(amount, 'General Demand (W)')
         top_max_production_values = abs(top_max_production['General Demand (W)'])
         top_max_production_time = top_max_production['Time']
-        return top_max_production_values.tolist(), top_max_production_time.tolist()
+        return top_max_production_values, top_max_production_time
     @staticmethod
     def imbalance_check(days):
         df=days[DAY]
@@ -98,6 +98,8 @@ class Identification():
             # If there is no imbalance, print the possible charging start time and date and return True
             #print(f"Possible Charging starts at:{st_time} - {end_time} Date:{st_date}")
             return True
+
+    
 
 class ProfileGenerator():
 
@@ -234,6 +236,8 @@ class metricsCalculator():
         area = trapz(y, x)
 
         return area
+    def total_positive_energy(df):
+        return df['Imbalnace'].sum()
     
     
 def get_day_data(days, day):
@@ -251,7 +255,13 @@ def get_day_data(days, day):
 def plot_single(df):
     return(Plotter.plot(df))
     
+def calculate_energy_imported(df):
+    # calculate energy imported from grid when imbalance is positive
+    df['Energy Imported (W)'] = 0  # initialize column to all zeros
+    positive_imbalance = df['Imbalnace'] > 0
+    df.loc[positive_imbalance, 'Energy Imported (W)'] = df.loc[positive_imbalance, 'TotalDemand'] + df.loc[positive_imbalance, 'EV Demand (W)'] + df.loc[positive_imbalance, 'PV (W)']
 
+    return int(df["Energy Imported (W)"].sum())
 
 def plot_miltiple(days,day_start,day_end):
         merged_data = pd.DataFrame()
@@ -273,32 +283,44 @@ def main():
     days = DateTimeSplitter().split_dataframe_by_day(df)
     #days[176].to_csv('randomday.csv')
     #print(DateTimeSplitter().split_datetime(days[1]))
-    #print(Identification.max_demand(df,10))
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Max Demand")
+        test1=(Identification.max_demand(df,10))
+        st.table(test1)
+    with col2:
+        st.subheader("Max Production")
+        test2=(Identification.max_production(df,10))
+        st.table(test2)
+
     data = get_day_data(days,DAY)
     
-    #comp_table = ComparisonTable(days[DAY], day_discharge)
-    #comp_table.plot()
-    #st.pyplot(comp_table.plot())
-    
-    
     data1=days[DAY]
-    st.title(f"Without EV ")
+
+    st.title(f"Imbalance Profile Without EV ")
     msg1=int(metricsCalculator.calculate_area(data1))
     plot1=plot_single(data1)
     st.pyplot(plot1)
-    st.write("Imbalance area",str(msg1))
-        
-    st.title(f"With EV{MAX_NO_CARS}")
+    st.write("Imbalance area",str(msg1),"Wh")
+    importEnergy = calculate_energy_imported(data1)
+    st.write("Power Inporetd From the GridWithout EVs",str(calculate_energy_imported(data1)),'W')
+
+    st.title(f"Imbalance Profile With {MAX_NO_CARS}  EV(s)")
     plot2=plot_single(data)
     msg2=int(metricsCalculator.calculate_area(data))
     st.pyplot(plot2)
-    st.write("Imbalance area", str(msg2))
-        
-    st.write('Ev Integration Results:',(msg1 - msg2))
+    st.write("Imbalance area", str(msg2),'Wh')
+    importEnergy1 = calculate_energy_imported(data)
+    st.write(f"Power Inporetd From the Grid With {MAX_NO_CARS} EVs",str(calculate_energy_imported(data)),"W")
+
+
+
+    st.write(f'When {MAX_NO_CARS} EV(s) are integrated, microgird receives ',str(abs(msg1 - msg2)),'Wh less energy is required from the grid')
+    st.write(f'When {MAX_NO_CARS} EV(s) are integrated, microgrid receives',str(round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)),'%','less power from the grid')
     st.title("Daily Plot")
 
     start=st.selectbox("StartDate", list(range(1, 362)))
-    end=st.selectbox("EndDAte", list(range(1, 362)))
+    end=st.selectbox("EndDAte", list(range(1, 362)),1)
 
     st.pyplot(plot_miltiple(days, start, end))
 
