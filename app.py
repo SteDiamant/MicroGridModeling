@@ -7,6 +7,7 @@ import streamlit as st
 import warnings
 from scipy.integrate import trapz
 import seaborn as sns
+import os
 pd.options.mode.chained_assignment = None
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -16,7 +17,8 @@ class DataLoader():
     @st.cache_data
     
     def load_data():
-        df = pd.read_csv('..\data\data_original.csv')
+        os.chdir('data')
+        df = pd.read_csv('data_original.csv')
         return df
 
 class PlotOptions():
