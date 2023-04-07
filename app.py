@@ -14,19 +14,18 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 class DataLoader():
     
-    @st.cache_data
+   
     
     def load_data():
-        
-        os.chdir('data')
-        df = pd.read_csv('data_original.csv')
-        
+        path=os.path.join(os.getcwd(),'data')
+        #print(path)
+        df = pd.read_csv(r'data_original.csv')
         return df
 
 class PlotOptions():
-        @st.cache_data            
+                   
         def plot_energy_demand_over_time(df):
-                print(df)
+
                 df['Time'] = pd.to_datetime(df['Time'])
                 fig, ax = plt.subplots(figsize=(16, 11))
                 ax.plot(df['Time'], df['TotalDemand'], label='Total Demand')
@@ -38,7 +37,8 @@ class PlotOptions():
                 ax.set_title('Energy Demand and PV Production over Time')
                 plt.show()
                 return fig
-        @st.cache_data
+        
+       
         def plot_energy_consumption_by_category(df):
                 demand_by_category = df[['TotalDemand', 'EV Demand (W)', 'PV (W)']].sum()
                 ax = demand_by_category.plot(kind='bar', figsize=(6, 10))
@@ -53,9 +53,9 @@ class PlotOptions():
                 plt.ylabel('Energy (W)')
                 plt.show()
         
-        @st.cache_data
+       
         def plot_demand_by_hour_and_weekday(df):
-                print(df)
+                #print(df)
                 df.reset_index(inplace=True)
                 df['Time'] = pd.to_datetime(df['Time'])
                 df['Hour'] = df['Time'].dt.hour
@@ -70,7 +70,7 @@ class PlotOptions():
                 plt.show()
                 
 
-        @st.cache_data
+       
         def plot_energy_demand_by_category_over_time(df):
                 df.reset_index(inplace=True)
                 df['Time'] = pd.to_datetime(df['Time'])
@@ -146,25 +146,25 @@ class PVCalculator():
 
 class Identification():
     
-    @st.cache_data
+   
     def count_true_false(df):
         true_count = df['Imbalance_check'].value_counts()[True]
         false_count = df['Imbalance_check'].value_counts()[False]
         return true_count, false_count
 
-    @st.cache_data
+   
     def max_production(df, amount):
         top_max_production = df.nsmallest(amount, 'PV (W)')
         top_max_production_values = abs(top_max_production['PV (W)'])
         top_max_production_time = top_max_production['Time']
         return top_max_production_values, top_max_production_time
-    @st.cache_data
+   
     def max_demand(df, amount):
         top_max_production = df.nlargest(amount, 'General Demand (W)')
         top_max_production_values = abs(top_max_production['General Demand (W)'])
         top_max_production_time = top_max_production['Time']
         return top_max_production_values, top_max_production_time
-    @st.cache_data
+   
     def imbalance_check(days):
         df=days[DAY]
         st_time,end_time,st_date,end_date = ProfileGenerator.estimate_charging_hours(days,DAY)
@@ -175,13 +175,13 @@ class Identification():
             # If there is an imbalance, return False
             return False
         else:
-            # If there is no imbalance, print the possible charging start time and date and return True
-            #print(f"Possible Charging starts at:{st_time} - {end_time} Date:{st_date}")
+            # If there is no imbalance, #print the possible charging start time and date and return True
+            ##print(f"Possible Charging starts at:{st_time} - {end_time} Date:{st_date}")
             return True
 
 class ProfileGenerator():
 
-    @st.cache_data
+   
     def estimate_charging_hours(days, day):
         df = days[day]
         df['Time'] = pd.to_datetime(df['Time'])
@@ -192,7 +192,7 @@ class ProfileGenerator():
         charge_range_end = max_pv_time + timedelta(hours=3)
         return (max_pv_time.time(), charge_range_start.time(), charge_range_end.time(), charge_range_start.date(), charge_range_end.date()) 
 
-    @st.cache_data
+   
     def create_charge_profile(days, day):
         time_start, charge_start, charge_end, date_start, date_end = ProfileGenerator.estimate_charging_hours(days, day)
         date_range = pd.date_range(start=datetime.combine(date_start, charge_start), end=datetime.combine(date_end, charge_end), freq='15min')
@@ -201,7 +201,7 @@ class ProfileGenerator():
         charge_profile.index.name = 'Time'
         return charge_profile
     
-    @st.cache_data
+   
     def estimate_discharging_hours(days, day):
         df = days[day]
         df['Time'] = pd.to_datetime(df['Time'])
@@ -212,19 +212,19 @@ class ProfileGenerator():
         discharge_range_end = min_demand_time + timedelta(hours=3)
         return (min_demand_time.time(), discharge_range_start.time(), discharge_range_end.time(), discharge_range_start.date(), discharge_range_end.date())
 
-    @st.cache_data
+   
     def create_discharge_profile(days, day):
         time_start, discharge_start, discharge_end, date_start, date_end = ProfileGenerator.estimate_discharging_hours(days, day)
         date_range = pd.date_range(start=datetime.combine(date_start, discharge_start), end=datetime.combine(date_end, discharge_end), freq='15min')
         discharge_profile = pd.DataFrame(index=date_range)
         limit_low=days[DAY]['TotalDemand'].min()
-        print(limit_low)
+        #print(limit_low)
         discharge_profile['EV Demand (W)'] = pd.Series(data=MAX_NO_CARS*np.random.randint(low=-limit_low/2, high=(-limit_low/2+1), size=len(date_range)), index=discharge_profile.index)
         discharge_profile.index.name = 'Time'
         return discharge_profile
 
 class DatasetMerger():
-    @st.cache_data
+   
     def merge_datasets(df1, df2):
         df1['Time']=pd.to_datetime(df1['Time'])
         df1=df1.set_index('Time')
@@ -247,7 +247,7 @@ class DatasetMerger():
         return merged_df1
         
 class Plotter:
-    @st.cache_data
+   
     def plot(df):
         try:
         # set Time column as index
@@ -359,7 +359,7 @@ def main():
     df= ImbalanceCalculator.calculate_imbalance(df)
     days = DateTimeSplitter().split_dataframe_by_day(df)
     #days[176].to_csv('randomday.csv')
-    #print(DateTimeSplitter().split_datetime(days[1]))
+    ##print(DateTimeSplitter().split_datetime(days[1]))
     # col1, col2 = st.columns(2)
     # with col1:
     #     st.subheader("Max Demand")
@@ -415,7 +415,7 @@ def main():
                 st.pyplot(PlotOptions.plot_energy_demand_over_time(data))
             with col2:
                 st.pyplot(PlotOptions.plot_demand_by_hour_and_weekday(data))
-                print(1)
+                #print(1)
             with col3:
                 st.pyplot(PlotOptions.plot_energy_consumption_by_category(data))
     st.write("Imbalance area", str(msg2),'Wh')
