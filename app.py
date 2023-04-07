@@ -20,7 +20,7 @@ class DataLoader():
         init_dire=os.getcwd()
         os.chdir('data')
         df = pd.read_csv('data_original.csv')
-        os.chdir(init_dire)
+        
         return df
 
 class PlotOptions():
