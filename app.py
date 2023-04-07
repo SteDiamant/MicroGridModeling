@@ -17,9 +17,10 @@ class DataLoader():
     @st.cache_data
     
     def load_data():
+        init_dire=os.getcwd()
         os.chdir('data')
         df = pd.read_csv('data_original.csv')
-        os.chdir('../data')
+        os.chdir(init_dire)
         return df
 
 class PlotOptions():
