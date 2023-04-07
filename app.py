@@ -7,7 +7,6 @@ import streamlit as st
 import warnings
 from scipy.integrate import trapz
 import seaborn as sns
-warnings.filterwarnings("ignore", message="`st.beta_columns` is deprecated")
 pd.options.mode.chained_assignment = None
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
