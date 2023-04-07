@@ -1,0 +1,4 @@
+# Ignore everything except the data directory and app.py
+*
+!data/
+!app.py
