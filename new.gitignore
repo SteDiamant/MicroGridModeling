@@ -1,6 +1,0 @@
-# Ignore everything except the data directory and app.py
-application/
-
-*
-!data/
-!app.py
