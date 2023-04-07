@@ -16,7 +16,7 @@ class DataLoader():
     @st.cache_data
     
     def load_data():
-        df = pd.read_csv('data\data_original.csv')
+        df = pd.read_csv(r'data\data_original.csv')
         return df
 
 class PlotOptions():
