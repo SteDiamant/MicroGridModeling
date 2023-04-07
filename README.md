@@ -46,3 +46,7 @@ This flowchart describes the process of estimating the charging and discharging 
 5. Set the index name to Time and return the discharge profile dataframe
 
 Note: The maximum number of cars is a variable that is not specified in the code and should be defined elsewhere in the program.
+
+[app](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)
+
+[https://github.com/SteDiamant/MicroGridModeling](https://github.com/SteDiamant/MicroGridModeling)

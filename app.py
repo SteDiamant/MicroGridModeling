@@ -60,7 +60,6 @@ class PlotOptions():
                 df['Time'] = pd.to_datetime(df['Time'])
                 df['Hour'] = df['Time'].dt.hour
                 df['DayOfWeek'] = df['Time'].dt.dayofweek
-                df['TotalDemand'] = df['General Demand (W)'] + df['EV Demand (W)'] + df['Heating Demand (W)']
                 demand_by_hour_weekday = df.pivot_table(index='Hour', columns='DayOfWeek', values='TotalDemand', aggfunc='mean')
                 fig, ax = plt.subplots(figsize=(6, 10))
                 sns.heatmap(demand_by_hour_weekday, cmap='YlGnBu', ax=ax)
@@ -76,11 +75,12 @@ class PlotOptions():
                 df['Time'] = pd.to_datetime(df['Time'])
                 fig, ax = plt.subplots(figsize=(16, 11))
                 stack_data = ax.stackplot(df['Time'],
+                                            df['EV Demand (W)'],
+                                          
                                             df['Imbalnace'],
                                             df['TotalDemand'],
-                                            df['EV Demand (W)'],
                                             df['PV (W)'],
-                                            labels=['Imbalance','TotaDemand', 'EV','PV'])
+                                            labels=['EV','Imbalance','TotaDemand','PV'])
                 handles, labels = [], []
                 ax.legend(loc='upper left')
                 ax.set_xlabel('Time')
@@ -102,7 +102,7 @@ class PlotOptions():
 class ImbalanceCalculator():
     def calculate_imbalance(df):
         # Calculate total demand
-        df['TotalDemand'] = df['General Demand (W)'] + df['EV Demand (W)'] + df['Heating Demand (W)']
+        df['TotalDemand'] = df['General Demand (W)']  + df['Heating Demand (W)']
         
         # Calculate PV power
         pv_calc = PVCalculator(pv_number=327)
