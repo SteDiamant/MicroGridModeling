@@ -6,6 +6,7 @@ import numpy as np
 import streamlit as st
 import warnings
 from scipy.integrate import trapz
+import seaborn as sns
 warnings.filterwarnings("ignore", message="`st.beta_columns` is deprecated")
 pd.options.mode.chained_assignment = None
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -13,12 +14,88 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 class DataLoader():
     
-    @staticmethod
+    @st.cache_data
     
     def load_data():
         df = pd.read_csv('data\data_original.csv')
         return df
 
+class PlotOptions():
+        @st.cache_data            
+        def plot_energy_demand_over_time(df):
+                print(df)
+                df['Time'] = pd.to_datetime(df['Time'])
+                fig, ax = plt.subplots(figsize=(16, 11))
+                ax.plot(df['Time'], df['TotalDemand'], label='Total Demand')
+                ax.plot(df['Time'], df['EV Demand (W)'], label='EV Demand')
+                ax.plot(df['Time'], df['PV (W)'], label='PV Production')
+                ax.legend()
+                ax.set_xlabel('Time')
+                ax.set_ylabel('Demand (W)')
+                ax.set_title('Energy Demand and PV Production over Time')
+                plt.show()
+                return fig
+        @st.cache_data
+        def plot_energy_consumption_by_category(df):
+                demand_by_category = df[['TotalDemand', 'EV Demand (W)', 'PV (W)']].sum()
+                ax = demand_by_category.plot(kind='bar', figsize=(6, 10))
+                
+                # Add text labels to the bars to show the sum of each category
+                for i, v in enumerate(demand_by_category):
+                        ax.annotate(str(int(v)), xy=(i, v), ha='center', va='bottom', fontsize=12)
+                
+                plt.title('Energy Consumption by Category')
+                plt.xticks(rotation=45) # Rotate x-tick labels to horizontal
+                plt.xlabel('Category')
+                plt.ylabel('Energy (W)')
+                plt.show()
+        
+        @st.cache_data
+        def plot_demand_by_hour_and_weekday(df):
+                print(df)
+                df.reset_index(inplace=True)
+                df['Time'] = pd.to_datetime(df['Time'])
+                df['Hour'] = df['Time'].dt.hour
+                df['DayOfWeek'] = df['Time'].dt.dayofweek
+                df['TotalDemand'] = df['General Demand (W)'] + df['EV Demand (W)'] + df['Heating Demand (W)']
+                demand_by_hour_weekday = df.pivot_table(index='Hour', columns='DayOfWeek', values='TotalDemand', aggfunc='mean')
+                fig, ax = plt.subplots(figsize=(6, 10))
+                sns.heatmap(demand_by_hour_weekday, cmap='YlGnBu', ax=ax)
+                ax.set_xlabel('Day of Week')
+                ax.set_ylabel('Hour of Day')
+                ax.set_title('Demand Heatmap by Time of Day and Day of Week')
+                plt.show()
+                
+
+        @st.cache_data
+        def plot_energy_demand_by_category_over_time(df):
+                df.reset_index(inplace=True)
+                df['Time'] = pd.to_datetime(df['Time'])
+                fig, ax = plt.subplots(figsize=(16, 11))
+                stack_data = ax.stackplot(df['Time'],
+                                            df['Imbalnace'],
+                                            df['TotalDemand'],
+                                            df['EV Demand (W)'],
+                                            df['PV (W)'],
+                                            labels=['Imbalance','TotaDemand', 'EV','PV'])
+                handles, labels = [], []
+                ax.legend(loc='upper left')
+                ax.set_xlabel('Time')
+                ax.set_ylabel('Demand (W)')
+                ax.set_title('Energy Demand by Category over Time')
+
+                for i, stack in enumerate(stack_data):
+                        vertices = stack.get_paths()[0].vertices
+                        x = vertices[:, 0]
+                        y = vertices[:, 1]
+                        area = np.trapz(y, x)
+                        label = f'{ax.get_legend().get_texts()[i].get_text()} (area: {area:.0f} W)'
+                        handles.append(plt.Rectangle((0,0), 1, 1, fc=stack.get_facecolor()[0]))
+                        labels.append(label)
+                    
+                ax.legend(handles, labels, loc='lower left', labelspacing=1)
+                plt.show()
+                    
 class ImbalanceCalculator():
     def calculate_imbalance(df):
         # Calculate total demand
@@ -66,25 +143,25 @@ class PVCalculator():
 
 class Identification():
     
-    @staticmethod
+    @st.cache_data
     def count_true_false(df):
         true_count = df['Imbalance_check'].value_counts()[True]
         false_count = df['Imbalance_check'].value_counts()[False]
         return true_count, false_count
 
-    @staticmethod
+    @st.cache_data
     def max_production(df, amount):
         top_max_production = df.nsmallest(amount, 'PV (W)')
         top_max_production_values = abs(top_max_production['PV (W)'])
         top_max_production_time = top_max_production['Time']
         return top_max_production_values, top_max_production_time
-    @staticmethod
+    @st.cache_data
     def max_demand(df, amount):
         top_max_production = df.nlargest(amount, 'General Demand (W)')
         top_max_production_values = abs(top_max_production['General Demand (W)'])
         top_max_production_time = top_max_production['Time']
         return top_max_production_values, top_max_production_time
-    @staticmethod
+    @st.cache_data
     def imbalance_check(days):
         df=days[DAY]
         st_time,end_time,st_date,end_date = ProfileGenerator.estimate_charging_hours(days,DAY)
@@ -99,11 +176,9 @@ class Identification():
             #print(f"Possible Charging starts at:{st_time} - {end_time} Date:{st_date}")
             return True
 
-    
-
 class ProfileGenerator():
 
-    @staticmethod
+    @st.cache_data
     def estimate_charging_hours(days, day):
         df = days[day]
         df['Time'] = pd.to_datetime(df['Time'])
@@ -114,7 +189,7 @@ class ProfileGenerator():
         charge_range_end = max_pv_time + timedelta(hours=3)
         return (max_pv_time.time(), charge_range_start.time(), charge_range_end.time(), charge_range_start.date(), charge_range_end.date()) 
 
-    @staticmethod
+    @st.cache_data
     def create_charge_profile(days, day):
         time_start, charge_start, charge_end, date_start, date_end = ProfileGenerator.estimate_charging_hours(days, day)
         date_range = pd.date_range(start=datetime.combine(date_start, charge_start), end=datetime.combine(date_end, charge_end), freq='15min')
@@ -123,7 +198,7 @@ class ProfileGenerator():
         charge_profile.index.name = 'Time'
         return charge_profile
     
-    @staticmethod
+    @st.cache_data
     def estimate_discharging_hours(days, day):
         df = days[day]
         df['Time'] = pd.to_datetime(df['Time'])
@@ -134,7 +209,7 @@ class ProfileGenerator():
         discharge_range_end = min_demand_time + timedelta(hours=3)
         return (min_demand_time.time(), discharge_range_start.time(), discharge_range_end.time(), discharge_range_start.date(), discharge_range_end.date())
 
-    @staticmethod
+    @st.cache_data
     def create_discharge_profile(days, day):
         time_start, discharge_start, discharge_end, date_start, date_end = ProfileGenerator.estimate_discharging_hours(days, day)
         date_range = pd.date_range(start=datetime.combine(date_start, discharge_start), end=datetime.combine(date_end, discharge_end), freq='15min')
@@ -146,7 +221,7 @@ class ProfileGenerator():
         return discharge_profile
 
 class DatasetMerger():
-    @staticmethod
+    @st.cache_data
     def merge_datasets(df1, df2):
         df1['Time']=pd.to_datetime(df1['Time'])
         df1=df1.set_index('Time')
@@ -169,7 +244,7 @@ class DatasetMerger():
         return merged_df1
         
 class Plotter:
-    @staticmethod
+    @st.cache_data
     def plot(df):
         try:
         # set Time column as index
@@ -222,7 +297,6 @@ class ComparisonTable:
 
         # display the plot
         plt.show()
-
 
 class metricsCalculator():
     def  calculate_area(df):
@@ -283,49 +357,89 @@ def main():
     days = DateTimeSplitter().split_dataframe_by_day(df)
     #days[176].to_csv('randomday.csv')
     #print(DateTimeSplitter().split_datetime(days[1]))
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Max Demand")
-        test1=(Identification.max_demand(df,10))
-        st.table(test1)
-    with col2:
-        st.subheader("Max Production")
-        test2=(Identification.max_production(df,10))
-        st.table(test2)
+    # col1, col2 = st.columns(2)
+    # with col1:
+    #     st.subheader("Max Demand")
+    #     test1=(Identification.max_demand(df,10))
+    #     st.table(test1)
+    # with col2:
+    #     st.subheader("Max Production")
+    #     test2=(Identification.max_production(df,10))
+    #     st.table(test2)
+
+    
 
     data = get_day_data(days,DAY)
+    st.subheader(f"Imbalance Profile Without EV ")
+    con1=st.container()
     
-    data1=days[DAY]
+    
+    with con1:
+        data1=days[DAY]
+        col1 , col2 = st.columns(2)
+        with col1:
+            msg1=int(metricsCalculator.calculate_area(data1))
+            plot1=plot_single(data1)
+            st.pyplot(plot1)
+            
+            importEnergy = calculate_energy_imported(data1)
+            
+            with col2:
+                col11, col12,col13 = st.columns(3)
+                with col11:
+                    st.pyplot(PlotOptions.plot_energy_demand_by_category_over_time(days[DAY]))
+                    st.pyplot(PlotOptions.plot_energy_demand_over_time(days[DAY]))
+                with col12:
+                    st.pyplot(PlotOptions.plot_demand_by_hour_and_weekday(days[DAY]))
+                with col13:
+                    st.pyplot(PlotOptions.plot_energy_consumption_by_category(days[DAY]))
+            st.write("Imbalance area",str(msg1),"Wh")
+            st.write("Power Inporetd From the GridWithout EVs",str(calculate_energy_imported(data1)),'W')
 
-    st.title(f"Imbalance Profile Without EV ")
-    msg1=int(metricsCalculator.calculate_area(data1))
-    plot1=plot_single(data1)
-    st.pyplot(plot1)
-    st.write("Imbalance area",str(msg1),"Wh")
-    importEnergy = calculate_energy_imported(data1)
-    st.write("Power Inporetd From the GridWithout EVs",str(calculate_energy_imported(data1)),'W')
-
-    st.title(f"Imbalance Profile With {MAX_NO_CARS}  EV(s)")
-    plot2=plot_single(data)
-    msg2=int(metricsCalculator.calculate_area(data))
-    st.pyplot(plot2)
+    st.subheader(f"Imbalance Profile With {MAX_NO_CARS}  EV(s)")
+    con2=st.container()
+    with con2:  
+        col1,col2 = st.columns(2)
+        with col1:
+            plot2=plot_single(data)
+            msg2=int(metricsCalculator.calculate_area(data))
+            st.pyplot(plot2)
+            importEnergy1 = calculate_energy_imported(data)
+        with col2:
+            col1, col2,col3 = st.columns(3)
+            with col1:
+                st.pyplot(PlotOptions.plot_energy_demand_by_category_over_time(data))
+                st.pyplot(PlotOptions.plot_energy_demand_over_time(data))
+            with col2:
+                st.pyplot(PlotOptions.plot_demand_by_hour_and_weekday(data))
+                print(1)
+            with col3:
+                st.pyplot(PlotOptions.plot_energy_consumption_by_category(data))
     st.write("Imbalance area", str(msg2),'Wh')
-    importEnergy1 = calculate_energy_imported(data)
     st.write(f"Power Inporetd From the Grid With {MAX_NO_CARS} EVs",str(calculate_energy_imported(data)),"W")
 
 
 
     st.write(f'When {MAX_NO_CARS} EV(s) are integrated, microgird receives ',str(abs(msg1 - msg2)),'Wh less energy is required from the grid')
     st.write(f'When {MAX_NO_CARS} EV(s) are integrated, microgrid receives',str(round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)),'%','less power from the grid')
+    
+               
+
+    
+        
+
     st.title("Daily Plot")
 
-    start=st.selectbox("StartDate", list(range(1, 362)))
-    end=st.selectbox("EndDAte", list(range(1, 362)),1)
+    
+    cl1,cl2=st.columns(2)
+    with cl1:
+        start=st.selectbox("StartDate", list(range(1, 362)))
+        end=st.selectbox("EndDAte", list(range(1, 362)),1)
+    with cl2:
+        data2=(plot_miltiple(days, start, end))
+        st.pyplot(data2)
 
-    st.pyplot(plot_miltiple(days, start, end))
-
-  
-
+    
 if __name__ == '__main__':
     
     MAX_NO_CARS=st.sidebar.selectbox("MaxNoCars1", [1, 2, 3,4])
