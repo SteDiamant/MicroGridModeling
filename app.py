@@ -274,10 +274,8 @@ class ComparisonTable:
     def plot(self):
         # create a figure with two subplots
         fig, axs = plt.subplots(1, 2, figsize=(16, 6))
-
         # plot data for first dataframe
         axs[0].set_title('Day Data')
-        
         axs[0].plot(self.df1['General Demand (W)'], label='General Demand')
         axs[0].plot(self.df1['EV Demand (W)'], label='EV Demand')
         axs[0].plot(self.df1['Heating Demand (W)'], label='Heating Demand')
@@ -347,8 +345,6 @@ def plot_miltiple(days,day_start,day_end):
             merged_data = pd.concat([merged_data, day_data], ignore_index=True)
         # plot the merged data
         return(Plotter.plot(merged_data))
-
-
 
 def main():
     

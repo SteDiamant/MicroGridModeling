@@ -1,52 +1,111 @@
-# Microgrid Modeling **EV Charging Scheduler**
+# A Microgrid model with multiple EV(s)
 
-This is a simple app that generates a charge schedule for electric vehicles (EVs) based on the predicted production from a photovoltaic (PV) system and the total demand of a household. 
-The app uses a dataset containing measurements of PV production, household demand, and EV charging demand over the course of a year.
-
-## Installation
- >pip install -r requirements.txt
-## Navigate to the directory that you have saved the project and run the command:
->streamlit run app.py
-## Data
-The data for this app can be found in the `data` directory. The app reads in the `data_f.csv` file and performs some data preprocessing to prepare it for analysis.
 # **Flowchart for Charging and Discharging EVs**
 
-This flowchart describes the process of estimating the charging and discharging hours for electric vehicles (EVs) using energy consumption data and solar panel output.
+This is a web application built using Streamlit that helps users visualize the impact of electric vehicles (EVs) on the energy demand of a microgrid. The app displays the imbalance profile of the microgrid and calculates the energy imported from the grid without EVs and with a specified number of EVs. Users can compare the energy demand with and without EVs and view a daily plot of the imbalance profiles for a selected date range. The app is useful for anyone interested in exploring the potential benefits of integrating EVs into a microgrid. This flowchart describes the process of estimating the charging and discharging hours for electric vehicles (EVs) using energy consumption data and solar panel output.
 
-**Estimate Charging Hours Function**
+## Usage
 
-1. Retrieve energy consumption data for the specified day from the days dictionary
-2. Convert the Time column to a datetime format and set it as the index of the dataframe
-3. Find the time when the solar panel output is at its minimum (the best time to start charging the EVs)
-4. Set the start and end times for the charging period to be three hours after the time of minimum solar panel output
-5. Return a tuple containing the start time, charge range start time, charge range end time, charge range start date, and charge range end date
+1. Install the required packages by running `pip install -r requirements.txt`.
+2. Run the app by running `streamlit run app.py`.
+3. Select a day to view the energy demand and imbalance profile with and without EVs.
+4. Use the sidebar options to select a date to view the daily plot of energy demand and imbalance.
 
-## **Create Charge Profile Function**
+## Code Structure
 
-1. Call the estimate_charging_hours function to retrieve the start and end times for the charging period
-2. Create a date range using the start and end times with a 15-minute frequency
-3. Create a dataframe with the date range as the index
-4. Generate random values for the EV demand using the maximum number of cars and random values between 6400 and 7000 watts
-5. Set the index name to Time and return the charge profile dataframe
+- `DataLoader.py`: Loads data from a CSV file.
+- `ImbalanceCalculator.py`: Calculates the energy imbalance of the microgrid.
+- `DateTimeSplitter.py`: Splits the data into individual days.
+- `Identification.py`: Identifies the maximum demand and production of the microgrid.
+- `MetricsCalculator.py`: Calculates metrics such as area under the curve of the energy demand profile.
+- `PlotOptions.py`: Contains functions to create various plots for energy demand visualization.
+- `app.py`: Contains the main Streamlit app code.
 
-## **Estimate Discharging Hours Function**
+## Functions
 
-1. Retrieve energy consumption data for the specified day from the days dictionary
-2. Convert the Time column to a datetime format and set it as the index of the dataframe
-3. Find the time when the energy demand is at its maximum (the best time to start discharging the EVs)
-4. Set the start and end times for the discharging period to be three hours after the time of maximum energy demand
-5. Return a tuple containing the start time, discharge range start time, discharge range end time, discharge range start date, and discharge range end date
+- `load_data()`: Loads the energy demand data from a CSV file.
+- `calculate_imbalance(df)`: Calculates the energy imbalance of the microgrid using the energy demand data.
+- `split_dataframe_by_day(df)`: Splits the energy demand data into individual days.
+- `max_demand(df, n)`: Returns the top `n` demand values from the energy demand data.
+- `max_production(df, n)`: Returns the top `n` production values from the energy demand data.
+- `calculate_area(data)`: Calculates the area under the curve of the energy demand profile.
+- `plot_energy_demand_by_category_over_time(data)`: Plots the energy demand over time by category.
+- `plot_energy_demand_over_time(data)`: Plots the energy demand over time.
+- `plot_demand_by_hour_and_weekday(data)`: Plots the energy demand by hour and weekday.
+- `plot_energy_consumption_by_category(data)`: Plots the energy consumption by category.
+- `plot_single(data)`: Plots the energy demand and imbalance profile for a single day.
+- `calculate_energy_imported(data)`: Calculates the energy imported from the grid.
+- `plot_multiple(days, start, end)`: Plots the energy demand and imbalance profile for multiple days.
 
-## **Create Discharge Profile Function**
+"""
 
-1. Call the estimate_discharging_hours function to retrieve the start and end times for the discharging period
-2. Create a date range using the start and end times with a 15-minute frequency
-3. Create a dataframe with the date range as the index
-4. Generate random values for the EV demand using the maximum number of cars and random values between -7000 and -6400 watts (since discharging means negative demand)
-5. Set the index name to Time and return the discharge profile dataframe
+## Discussion Topics:
 
-Note: The maximum number of cars is a variable that is not specified in the code and should be defined elsewhere in the program.
+To determine the impact of EVs (charge/discharge) on the imbalance curve, we have to generate the corresponding datasets for charge and discharge for chosen day, and afterwards we have to merge the original dataset and the charge/discharge dataset.
+
+1. **`charge_profile = ProfileGenerator.create_charge_profile(days, day)`** generates a charging profile for a specific day using the **`create_charge_profile`** method from the **`ProfileGenerator`** class, which takes a dictionary of daily data and a day as inputs.
+2. **`day_charge = DatasetMerger.merge_datasets(days[day], charge_profile)`** merges the generated charging profile with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`day_charge`** which includes the original data and the generated charging profile.
+3. **`discharge_profile = ProfileGenerator.create_discharge_profile(days, day)`** generates a discharging profile for the same day using the **`create_discharge_profile`** method from the **`ProfileGenerator`** class.
+4. **`day_discharge = DatasetMerger.merge_datasets(days[day], discharge_profile)`** merges the generated discharging profile with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`day_discharge`** which includes the original data and the generated discharging profile.
+5. **`charge_discharge = pd.concat([charge_profile, discharge_profile])`** concatenates the charging and discharging profiles into a single dataset called **`charge_discharge`** using the **`concat`** method from the Pandas library.
+6. **`data = DatasetMerger.merge_datasets(days[day], charge_discharge)`** merges the **`charge_discharge`** dataset with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`data`** which includes both the original data and the charging and discharging profiles.
+
+# **Energy Data Visualization Functions**
+
+This is a set of four functions for visualizing energy demand and production data using the pandas and matplotlib libraries in Python.
+
+## **`plot_energy_demand_over_time`**
+
+This function takes a pandas DataFrame containing energy demand and production data over time, and plots the TotalDemand, EV Demand, and PV Production on a single plot over time.
+
+The input DataFrame is expected to have the following columns:
+
+- Time: a datetime column representing the time of the energy measurement
+- TotalDemand: a column representing the total energy demand at the given time
+- EV Demand (W): a column representing the energy demand specifically from electric vehicles at the given time
+- PV (W): a column representing the energy production from solar panels at the given time
+
+The output of the function is a matplotlib figure object.
+
+## **`plot_energy_consumption_over_time`**
+
+This function takes a pandas DataFrame containing energy demand and production data, and plots the total energy consumption by category as a bar plot.
+
+The input DataFrame is expected to have the following columns:
+
+- TotalDemand: a column representing the total energy demand at the given time
+- EV Demand (W): a column representing the energy demand specifically from electric vehicles at the given time
+- PV (W): a column representing the energy production from solar panels at the given time
+
+The output of the function is a matplotlib figure object.
+
+## **`plot_demand_by_hour_and_weekday`**
+
+This function takes a pandas DataFrame containing energy demand and production data, and plots the average energy demand by hour of the day and day of the week as a heatmap.
+
+The input DataFrame is expected to have the following columns:
+
+- Time: a datetime column representing the time of the energy measurement
+- TotalDemand: a column representing the total energy demand at the given time
+
+The output of the function is a matplotlib figure object.
+
+## **`plot_energy_demand_by_category_over_time`**
+
+This function takes a pandas DataFrame containing energy demand and production data over time, and plots the energy demand over time broken down by category (EV Demand, Imbalance, TotalDemand, PV Production) as a stacked area plot.
+
+The input DataFrame is expected to have the following columns:
+
+- Time: a datetime column representing the time of the energy measurement
+- TotalDemand: a column representing the total energy demand at the given time
+- EV Demand (W): a column representing the energy demand specifically from electric vehicles at the given time
+- Imbalance: a column representing the energy imbalance at the given time
+- PV (W): a column representing the energy production from solar panels at the given time
+
+# Check out the app here
 
 [app](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)
+
+# Check out the code here
 
 [https://github.com/SteDiamant/MicroGridModeling](https://github.com/SteDiamant/MicroGridModeling)
