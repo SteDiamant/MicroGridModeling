@@ -1,15 +1,14 @@
 # A Microgrid model with multiple EV(s)
 
-# **Flowchart for Charging and Discharging EVs**
 
-This is a web application built using Streamlit that helps users visualize the impact of electric vehicles (EVs) on the energy demand of a microgrid. The app displays the imbalance profile of the microgrid and calculates the energy imported from the grid without EVs and with a specified number of EVs. Users can compare the energy demand with and without EVs and view a daily plot of the imbalance profiles for a selected date range. The app is useful for anyone interested in exploring the potential benefits of integrating EVs into a microgrid. This flowchart describes the process of estimating the charging and discharging hours for electric vehicles (EVs) using energy consumption data and solar panel output.
+This is a web application built using Streamlit that helps users visualize the impact of electric vehicles (EVs) on the energy demand of a microgrid. The app displays the imbalance profile of the microgrid and calculates the energy imported from the grid without EVs and with a specified number of EVs. Users can compare the energy demand with and without EVs and view a daily plot of the imbalance profiles for a selected date range. The app is useful for anyone interested in exploring the potential benefits of integrating EVs into a microgrid.
 
 ## Usage
 
 1. Install the required packages by running `pip install -r requirements.txt`.
 2. Run the app by running `streamlit run app.py`.
 3. Select a day to view the energy demand and imbalance profile with and without EVs.
-4. Use the sidebar options to select a date to view the daily plot of energy demand and imbalance.
+4. Select a number of PVs to view the energy demand and imbalance profile with and without EVs..
 
 ## Code Structure
 
