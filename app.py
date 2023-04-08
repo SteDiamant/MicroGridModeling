@@ -19,7 +19,7 @@ class DataLoader():
     def load_data():
         path=os.path.join(os.getcwd(),'data')
         print(path)
-        df = pd.read_csv(r'data/data_original.csv')
+        df = pd.read_csv(r'data_original.csv')
         return df
 
 class PlotOptions():
