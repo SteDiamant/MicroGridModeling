@@ -15,9 +15,6 @@ st. set_page_config(layout="wide")
 
 
 class DataLoader():
-    
-   
-    
     def load_data():
         path=os.path.join(os.getcwd(),'data')
         print(path)
@@ -101,7 +98,7 @@ class PlotOptions():
                     
                 ax.legend(handles, labels, loc='lower left', labelspacing=1)
                 plt.show()
-                    
+                
 class ImbalanceCalculator():
     def calculate_imbalance(df):
         # Calculate total demand
@@ -163,8 +160,8 @@ class Identification():
         return top_max_production_values, top_max_production_time
    
     def max_demand(df, amount):
-        top_max_production = df.nlargest(amount, 'General Demand (W)')
-        top_max_production_values = abs(top_max_production['General Demand (W)'])
+        top_max_production = df.nlargest(amount, 'TotalDemand')
+        top_max_production_values = abs(top_max_production['TotalDemand'])
         top_max_production_time = top_max_production['Time']
         return top_max_production_values, top_max_production_time
    
@@ -191,7 +188,7 @@ class ProfileGenerator():
         df = df.set_index('Time')
         max_pv_index = df['PV (W)'].idxmin()
         max_pv_time = datetime.combine(df['PV (W)'].idxmin().date(), max_pv_index.time())
-        charge_range_start = max_pv_time
+        charge_range_start = max_pv_time -timedelta(hours=MOVE_CHARGING_BEFORE_PEAK_PRODUCTION)
         charge_range_end = max_pv_time + timedelta(hours=CHARGE_TIME)
         return (max_pv_time.time(), charge_range_start.time(), charge_range_end.time(), charge_range_start.date(), charge_range_end.date()) 
 
@@ -211,8 +208,8 @@ class ProfileGenerator():
         df = df.set_index('Time')
         min_demand_index = df['General Demand (W)'].idxmax()
         min_demand_time = datetime.combine(df['General Demand (W)'].idxmax().date(), min_demand_index.time())
-        discharge_range_start = min_demand_time
-        discharge_range_end = min_demand_time + timedelta(hours=DISCHARGE_TIME)
+        discharge_range_start = min_demand_time -timedelta(hours=MOVE_DISCHARGING_BEFORE_PEAK_DEMAND)
+        discharge_range_end = min_demand_time + timedelta(hours=DISCHARGE_TIME) 
         return (min_demand_time.time(), discharge_range_start.time(), discharge_range_end.time(), discharge_range_start.date(), discharge_range_end.date())
 
    
@@ -248,7 +245,7 @@ class DatasetMerger():
         # Add Imbalance check column
         merged_df1['Imbalance_check'] = merged_df1['Imbalnace'].apply(lambda x: True if x >= 0 else False)
         return merged_df1
-        
+     
 class Plotter:
    
     def plot(df):
@@ -333,7 +330,7 @@ def get_day_data(days, day):
 
 def plot_single(df):
     return(Plotter.plot(df))
-    
+  
 def calculate_energy_imported(df):
     # calculate energy imported from grid when imbalance is positive
     df['Energy Imported (W)'] = 0  # initialize column to all zeros
@@ -352,7 +349,7 @@ def plot_miltiple(days,day_start,day_end):
 
 def main():
     
-    st.title("My Streamlit App")
+    st.title("EV Impact on Microgrid Energy Demand Visualizer")
     
     
     df=DataLoader.load_data()
@@ -360,15 +357,15 @@ def main():
     days = DateTimeSplitter().split_dataframe_by_day(df)
     #days[176].to_csv('randomday.csv')
     ##print(DateTimeSplitter().split_datetime(days[1]))
-    # col1, col2 = st.columns(2)
-    # with col1:
-    #     st.subheader("Max Demand")
-    #     test1=(Identification.max_demand(df,10))
-    #     st.table(test1)
-    # with col2:
-    #     st.subheader("Max Production")
-    #     test2=(Identification.max_production(df,10))
-    #     st.table(test2)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Max Demand")
+        test1=(Identification.max_demand(df,10))
+        st.table(list(test1))
+    with col2:
+        st.subheader("Max Production")
+        test2=(Identification.max_production(df,10))
+        st.table(test2)
 
     
 
@@ -418,13 +415,19 @@ def main():
                 #print(1)
             with col3:
                 st.pyplot(PlotOptions.plot_energy_consumption_by_category(data))
-    st.write("Imbalance area", str(msg2),'Wh')
-    st.write(f"Power Inporetd From the Grid With {MAX_NO_CARS} EVs",str(calculate_energy_imported(data)),"W")
-
-
-
-    st.write(f'When {MAX_NO_CARS} EV(s) are integrated, microgird receives ',str(abs(msg1 - msg2)),'Wh less energy is required from the grid')
-    st.write(f'When {MAX_NO_CARS} EV(s) are integrated, microgrid receives',str(round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)),'%','less power from the grid')
+    col1,col2 = st.columns(2)
+    with col1:
+        st.write("Imbalance area", str(msg2),'Wh')
+        st.write(f"Power Inporetd From the Grid With {MAX_NO_CARS} EVs",str(calculate_energy_imported(data)),"W")
+    with col2:
+        if int(round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)) >= 0:
+            arrow = "🟢↑"  # Green arrow up for positive values of x
+            word='less'
+        else:
+            arrow = "🔴↓"  # Red arrow down for negative values of x
+            word='more'
+        st.markdown(f"## Impact of {MAX_NO_CARS} EV(s)\n\n:When {MAX_NO_CARS} EV(s) are integrated, microgrid receives  {round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)}% {word} power from the grid{arrow}")
+        st.markdown(f'When {MAX_NO_CARS} EV(s) are integrated, the microgrid receives {abs(msg1 - msg2)} Wh {word} energy is required from the grid.')
     
                
 
@@ -444,10 +447,20 @@ def main():
 
     
 if __name__ == '__main__':
-    
+    st.sidebar.header('Select the parameters')
+
+    st.sidebar.subheader('Choose the number of EVs')
     MAX_NO_CARS=st.sidebar.selectbox("MaxNoCars1", [1, 2, 3,4])
-    DAY = st.sidebar.selectbox("DAY", list(range(1, 362)))
-    CHARGE_TIME=st.sidebar.selectbox("CHARGE_TIME", [1, 2, 3,4])
-    DISCHARGE_TIME=st.sidebar.selectbox("DISCHARGE_TIME", [1, 2, 3,4])
+
+    st.sidebar.subheader('Choose the day')
+    DAY = st.sidebar.selectbox("Days Index", list(range(1, 362)))
+
+    st.sidebar.subheader('Choose the EV charging parameters')
+    CHARGE_TIME=st.sidebar.selectbox("Duration of Charging", [1, 2, 3,4])
+    MOVE_CHARGING_BEFORE_PEAK_PRODUCTION=st.sidebar.selectbox("Move Charging Profile Before Peak Production Hours",  list(range(0, 5)),0)
+
+    st.sidebar.subheader('Choose the EV discharging parameters')
+    DISCHARGE_TIME=st.sidebar.selectbox("Duration of Discharging", [1, 2, 3,4])
+    MOVE_DISCHARGING_BEFORE_PEAK_DEMAND=st.sidebar.selectbox("Move Discharging Profile Before Peak Demand Hours", list(range(0, 5)),0)
 
     main()
