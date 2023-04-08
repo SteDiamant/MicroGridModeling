@@ -18,8 +18,8 @@ class DataLoader():
     
     def load_data():
         path=os.path.join(os.getcwd(),'data')
-        #print(path)
-        df = pd.read_csv(r'data_original.csv')
+        print(path)
+        df = pd.read_csv(r'data/data_original.csv')
         return df
 
 class PlotOptions():
@@ -189,7 +189,7 @@ class ProfileGenerator():
         max_pv_index = df['PV (W)'].idxmin()
         max_pv_time = datetime.combine(df['PV (W)'].idxmin().date(), max_pv_index.time())
         charge_range_start = max_pv_time
-        charge_range_end = max_pv_time + timedelta(hours=3)
+        charge_range_end = max_pv_time + timedelta(hours=CHARGE_TIME)
         return (max_pv_time.time(), charge_range_start.time(), charge_range_end.time(), charge_range_start.date(), charge_range_end.date()) 
 
    
@@ -209,7 +209,7 @@ class ProfileGenerator():
         min_demand_index = df['General Demand (W)'].idxmax()
         min_demand_time = datetime.combine(df['General Demand (W)'].idxmax().date(), min_demand_index.time())
         discharge_range_start = min_demand_time
-        discharge_range_end = min_demand_time + timedelta(hours=3)
+        discharge_range_end = min_demand_time + timedelta(hours=DISCHARGE_TIME)
         return (min_demand_time.time(), discharge_range_start.time(), discharge_range_end.time(), discharge_range_start.date(), discharge_range_end.date())
 
    
@@ -443,5 +443,7 @@ if __name__ == '__main__':
     
     MAX_NO_CARS=st.sidebar.selectbox("MaxNoCars1", [1, 2, 3,4])
     DAY = st.sidebar.selectbox("DAY", list(range(1, 362)))
+    CHARGE_TIME=st.sidebar.selectbox("CHARGE_TIME", [1, 2, 3,4])
+    DISCHARGE_TIME=st.sidebar.selectbox("DISCHARGE_TIME", [1, 2, 3,4])
 
     main()
