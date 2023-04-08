@@ -1,15 +1,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import datetime
 from datetime import datetime,timedelta
 import numpy as np
 import streamlit as st
-import warnings
 from scipy.integrate import trapz
 import seaborn as sns
 import os
+
+
 pd.options.mode.chained_assignment = None
 st.set_option('deprecation.showPyplotGlobalUse', False)
+st. set_page_config(layout="wide")
+
 
 
 class DataLoader():
@@ -19,6 +21,7 @@ class DataLoader():
     def load_data():
         path=os.path.join(os.getcwd(),'data')
         print(path)
+        ##THERE IS A BUG HERE WHEN I RUN THE CODE ON STREAMLIT CLOUD I HAVE TO DELETE THE {data}/data_original.csv FILE AND RUN THE CODE AGAIN
         df = pd.read_csv(r'data_original.csv')
         return df
 
@@ -315,6 +318,7 @@ class metricsCalculator():
         return df['Imbalnace'].sum()
     
     
+
 def get_day_data(days, day):
     charge_profile = ProfileGenerator.create_charge_profile(days, day)
     day_charge = DatasetMerger.merge_datasets(days[day], charge_profile)
