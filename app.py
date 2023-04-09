@@ -16,31 +16,29 @@ st. set_page_config(layout="wide")
 
 class DataLoader():
     def load_data():
-        path=os.path.join(os.getcwd(),'data')
-        print(path)
+        #path=os.path.join(os.getcwd(),'data')
+        #print(path)
         ##THERE IS A BUG HERE WHEN I RUN THE CODE ON STREAMLIT CLOUD I HAVE TO DELETE THE {data}/data_original.csv FILE AND RUN THE CODE AGAIN
-        df = pd.read_csv(r'data_original.csv')
+        df = pd.read_csv(r'data/data_original.csv')
         return df
 
 class PlotOptions():
                    
-        def plot_energy_demand_over_time(df):
-
-                df['Time'] = pd.to_datetime(df['Time'])
-                fig, ax = plt.subplots(figsize=(16, 11))
-                ax.plot(df['Time'], df['TotalDemand'], label='Total Demand')
-                ax.plot(df['Time'], df['EV Demand (W)'], label='EV Demand')
-                ax.plot(df['Time'], df['PV (W)'], label='PV Production')
-                ax.legend()
-                ax.set_xlabel('Time')
-                ax.set_ylabel('Demand (W)')
-                ax.set_title('Energy Demand and PV Production over Time')
-                plt.show()
-                return fig
+        
+        def plot_energy_demand_over_time_bar(df):
+            df['Time'] = pd.to_datetime(df['Time'])
+            fig, ax = plt.subplots(figsize=(16, 11))
+            ax.fill_between(df['Time'], df['EV Demand (W)'], label='EV Demand')
+            ax.fill_between(df['Time'], df['Imbalnace'], label='Imbalnace')
+            ax.legend()
+            ax.set_xlabel('Time')
+            ax.set_ylabel('Demand (W)')
+            ax.set_title('Imbalnace and EV_Usage(W) over Time')
+            plt.show()
         
        
         def plot_energy_consumption_by_category(df):
-                demand_by_category = df[['TotalDemand', 'EV Demand (W)', 'PV (W)']].sum()
+                demand_by_category = df[['Heating Demand (W)', 'EV Demand (W)', 'General Demand (W)']].sum()
                 ax = demand_by_category.plot(kind='bar', figsize=(6, 10))
                 
                 # Add text labels to the bars to show the sum of each category
@@ -74,18 +72,17 @@ class PlotOptions():
                 df.reset_index(inplace=True)
                 df['Time'] = pd.to_datetime(df['Time'])
                 fig, ax = plt.subplots(figsize=(16, 11))
+                for index, row in df.iterrows():
+                    if row['Imbalnace'] > 0:
+                        df.at[index, 'Energy Imported (W)'] = row['TotalDemand'] + row['EV Demand (W)'] + row['PV (W)']
                 stack_data = ax.stackplot(df['Time'],
-                                            df['EV Demand (W)'],
-                                          
-                                            df['Imbalnace'],
-                                            df['TotalDemand'],
-                                            df['PV (W)'],
-                                            labels=['EV','Imbalance','TotaDemand','PV'])
+                                            df['Energy Imported (W)'],
+                                            labels=['Energy Imported (W)'])
                 handles, labels = [], []
                 ax.legend(loc='upper left')
                 ax.set_xlabel('Time')
                 ax.set_ylabel('Demand (W)')
-                ax.set_title('Energy Demand by Category over Time')
+                ax.set_title('Imported Energy Profile over Time')
 
                 for i, stack in enumerate(stack_data):
                         vertices = stack.get_paths()[0].vertices
@@ -388,7 +385,7 @@ def main():
                 col11, col12,col13 = st.columns(3)
                 with col11:
                     st.pyplot(PlotOptions.plot_energy_demand_by_category_over_time(days[DAY]))
-                    st.pyplot(PlotOptions.plot_energy_demand_over_time(days[DAY]))
+                    st.pyplot(PlotOptions.plot_energy_demand_over_time_bar(days[DAY]))
                 with col12:
                     st.pyplot(PlotOptions.plot_demand_by_hour_and_weekday(days[DAY]))
                 with col13:
@@ -409,7 +406,7 @@ def main():
             col1, col2,col3 = st.columns(3)
             with col1:
                 st.pyplot(PlotOptions.plot_energy_demand_by_category_over_time(data))
-                st.pyplot(PlotOptions.plot_energy_demand_over_time(data))
+                st.pyplot(PlotOptions.plot_energy_demand_over_time_bar(data))
             with col2:
                 st.pyplot(PlotOptions.plot_demand_by_hour_and_weekday(data))
                 #print(1)
