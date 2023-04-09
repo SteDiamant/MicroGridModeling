@@ -23,7 +23,15 @@ class DataLoader():
         return df
 
 class PlotOptions():
-                   
+        def plot_energy_imported_bar(data1, data):
+            labels = [f'0 EVs', f'{MAX_NO_CARS} EVs']
+            values = [calculate_energy_imported(data1), calculate_energy_imported(data)]
+            fig, ax = plt.subplots(figsize=(6, 4))
+            ax.bar(labels, values)
+            ax.set_ylabel('Energy Imported (W)')
+            ax.set_title('Energy Imported (W)')
+            plt.xticks(rotation=45)
+            plt.show()
         
         def plot_energy_demand_over_time_bar(df):
             df['Time'] = pd.to_datetime(df['Time'])
@@ -390,8 +398,7 @@ def main():
                     st.pyplot(PlotOptions.plot_demand_by_hour_and_weekday(days[DAY]))
                 with col13:
                     st.pyplot(PlotOptions.plot_energy_consumption_by_category(days[DAY]))
-            st.write("Imbalance area",str(msg1),"Wh")
-            st.write("Power Inporetd From the GridWithout EVs",str(calculate_energy_imported(data1)),'W')
+            
 
     st.subheader(f"Imbalance Profile With {MAX_NO_CARS}  EV(s)")
     con2=st.container()
@@ -414,8 +421,8 @@ def main():
                 st.pyplot(PlotOptions.plot_energy_consumption_by_category(data))
     col1,col2 = st.columns(2)
     with col1:
-        st.write("Imbalance area", str(msg2),'Wh')
-        st.write(f"Power Inporetd From the Grid With {MAX_NO_CARS} EVs",str(calculate_energy_imported(data)),"W")
+        st.pyplot(PlotOptions.plot_energy_imported_bar(data1, data))
+        
     with col2:
         if int(round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)) >= 0:
             arrow = "🟢↑"  # Green arrow up for positive values of x
@@ -425,7 +432,10 @@ def main():
             word='more'
         st.markdown(f"## Impact of {MAX_NO_CARS} EV(s)\n\n:When {MAX_NO_CARS} EV(s) are integrated, microgrid receives  {round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)}% {word} power from the grid{arrow}")
         st.markdown(f'When {MAX_NO_CARS} EV(s) are integrated, the microgrid receives {abs(msg1 - msg2)} Wh {word} energy is required from the grid.')
-    
+        st.markdown(f'- Imbalance area with **{MAX_NO_CARS} EVs**: {msg2} Wh')
+        st.markdown(f"- Imbalance area with **NO Evs**: {msg1} Wh")
+        st.markdown(f"- Power imported from the grid with **{MAX_NO_CARS} EVs**: {calculate_energy_imported(data)} W ")
+        st.markdown(f"- Power imported from the grid without EVs: {calculate_energy_imported(data1)} W")
                
 
     
