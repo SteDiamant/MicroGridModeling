@@ -10,7 +10,7 @@ This is a web application built using Streamlit that helps users visualize the i
 3. Select a day to view the energy demand and imbalance profile with and without EVs.
 4. Select a number of PVs to view the energy demand and imbalance profile with and without EVs..
 ## Model Topology
-![Alt text](data/image.png)
+![Alt text](C:\Users\stdia\Desktop\MicroGridModeling\models\MicroGridModeling\data\image.png)
 ## Code Structure
 
 - `DataLoader.py`: Loads data from a CSV file.
