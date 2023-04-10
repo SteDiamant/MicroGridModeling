@@ -6,7 +6,7 @@ import streamlit as st
 from scipy.integrate import trapz
 import seaborn as sns
 import os
-
+import base64
 
 pd.options.mode.chained_assignment = None
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -350,7 +350,7 @@ def plot_miltiple(days,day_start,day_end):
             day_data = get_day_data(days, i)
             merged_data = pd.concat([merged_data, day_data], ignore_index=True)
         # plot the merged data
-        return(Plotter.plot(merged_data))
+        return(merged_data)
 
 def main():
     
@@ -360,13 +360,14 @@ def main():
     df=DataLoader.load_data()
     df= ImbalanceCalculator.calculate_imbalance(df)
     days = DateTimeSplitter().split_dataframe_by_day(df)
-    #days[176].to_csv('randomday.csv')
-    ##print(DateTimeSplitter().split_datetime(days[1]))
+    """
+
+    """
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("Max Demand")
-        test1=(Identification.max_demand(df,10))
-        st.table(list(test1))
+            st.subheader("Max Demand")
+            test1=(Identification.max_demand(df,10))
+            st.table(list(test1))
     with col2:
         st.subheader("Max Production")
         test2=(Identification.max_production(df,10))
@@ -430,12 +431,16 @@ def main():
         else:
             arrow = "🔴↓"  # Red arrow down for negative values of x
             word='more'
-        st.markdown(f"## Impact of {MAX_NO_CARS} EV(s)\n\n:When {MAX_NO_CARS} EV(s) are integrated, microgrid receives  {round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)}% {word} power from the grid{arrow}")
+        st.markdown(f"## Impact of {MAX_NO_CARS} EV(s)")
+        st.markdown(f"When {MAX_NO_CARS} EV(s) are integrated, microgrid receives  {round((importEnergy - importEnergy1)/data['TotalDemand'].sum()*100)}% {word} power from the grid{arrow}")
         st.markdown(f'When {MAX_NO_CARS} EV(s) are integrated, the microgrid receives {abs(msg1 - msg2)} Wh {word} energy is required from the grid.')
-        st.markdown(f'- Imbalance area with **{MAX_NO_CARS} EVs**: {msg2} Wh')
+        st.markdown(f"### Impact on Imbalance area")
         st.markdown(f"- Imbalance area with **NO Evs**: {msg1} Wh")
-        st.markdown(f"- Power imported from the grid with **{MAX_NO_CARS} EVs**: {calculate_energy_imported(data)} W ")
-        st.markdown(f"- Power imported from the grid without EVs: {calculate_energy_imported(data1)} W")
+        st.markdown(f'- Imbalance area with **{MAX_NO_CARS} EVs**: {msg2} Wh')
+        st.markdown(f"### Impact on Power IMported from the Grid")
+        st.markdown(f"- Power imported from the grid without EVs: {calculate_energy_imported(data1)/1000:.2f} kW")
+        st.markdown(f"- Power imported from the grid with **{MAX_NO_CARS} EVs**: {calculate_energy_imported(data)/1000:.2f} kW ")
+        
                
 
     
@@ -448,9 +453,44 @@ def main():
     with cl1:
         start=st.selectbox("StartDate", list(range(1, 362)))
         end=st.selectbox("EndDAte", list(range(1, 362)),1)
-    with cl2:
         data2=(plot_miltiple(days, start, end))
-        st.pyplot(data2)
+        st.write(Plotter.plot(data2))
+    with cl2:
+        
+        mean_total_demand = data2['TotalDemand'].mean()
+        max_total_demand = data2['TotalDemand'].max()
+        min_total_demand = data2['TotalDemand'].min()
+        mean_total_production = data2['PV (W)'].mean()
+        max_total_production = data2['PV (W)'].max()
+        min_total_production = abs(data2['PV (W)'].min())
+
+
+
+
+        for index, row in data2.iterrows():
+                    if row['Imbalnace'] > 0:
+                        data2['Energy Imported (W)'] = data2['TotalDemand'] + data2['EV Demand (W)'] + data2['PV (W)']
+                    else:
+                        data2['Energy Imported (W)'] = 0
+        total_imported_energy = data2['Energy Imported (W)'].sum()
+        total_demand_distribution = data2['TotalDemand'].describe()
+        col3,col4=st.columns(2)
+        with col3:
+            st.markdown(f"## TotalDemand Statistics\n"
+                    f"* Mean TotalDemand: {mean_total_demand/1000:.2f} kW\n"
+                    f"* Maximum TotalDemand: {max_total_demand/1000:.2f} kW\n"
+                    f"* Minimum TotalDemand: {min_total_demand/1000:.2f} kW\n\n")
+        with col4:
+             st.markdown(f"## PV Production Statistics\n"
+                    f"* Mean PV Production: {mean_total_production/1000:.2f} W\n"
+                    f"* Maximum PV Production: {min_total_production/1000:.2f} kW\n\n")
+             
+
+        st.markdown(f"## Energy Imported Statistics\n"
+            f"* Total energy Imported: {total_imported_energy/1000:.2f} kWh\n\n"
+            f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45)/12:.2f} $ for a duration of {end-start} days\n\n")
+
+        
 
     
 if __name__ == '__main__':
