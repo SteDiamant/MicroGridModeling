@@ -440,15 +440,9 @@ def main():
         st.markdown(f"### Impact on Power IMported from the Grid")
         st.markdown(f"- Power imported from the grid without EVs: {calculate_energy_imported(data1)/1000:.2f} kW")
         st.markdown(f"- Power imported from the grid with **{MAX_NO_CARS} EVs**: {calculate_energy_imported(data)/1000:.2f} kW ")
-        
-               
-
-    
-        
 
     st.title("Daily Plot")
 
-    
     cl1,cl2=st.columns(2)
     with cl1:
         start=st.selectbox("StartDate", list(range(1, 362)))
@@ -488,7 +482,7 @@ def main():
 
         st.markdown(f"## Energy Imported Statistics\n"
             f"* Total energy Imported: {total_imported_energy/1000:.2f} kWh\n\n"
-            f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45)/12:.2f} $ for a duration of {end-start} days\n\n")
+            f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45):.2f} $ for a duration of {end-start} days\n\n")
 
         
 

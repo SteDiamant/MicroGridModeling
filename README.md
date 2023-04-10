@@ -9,7 +9,8 @@ This is a web application built using Streamlit that helps users visualize the i
 2. Run the app by running `streamlit run app.py`.
 3. Select a day to view the energy demand and imbalance profile with and without EVs.
 4. Select a number of PVs to view the energy demand and imbalance profile with and without EVs..
-
+## Model Topology
+![Alt text](data\ModelTopology.drawio.png "Optional title" {width=50% height=50%})
 ## Code Structure
 
 - `DataLoader.py`: Loads data from a CSV file.
