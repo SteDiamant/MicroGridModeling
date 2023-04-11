@@ -56,53 +56,60 @@ To determine the impact of EVs (charge/discharge) on the imbalance curve, we hav
 
 This is a set of four functions for visualizing energy demand and production data using the pandas and matplotlib libraries in Python.
 
-## **`plot_energy_demand_over_time`**
+## **`plot_imported_energy_over_time`**
 
-This function takes a pandas DataFrame containing energy demand and production data over time, and plots the TotalDemand, EV Demand, and PV Production on a single plot over time.
+### Input: 
+df: A pandas DataFrame containing columns named 'Time', 'TotalDemand', 'EV Demand (W)', 'PV (W)', and 'Imbalance'.
 
-The input DataFrame is expected to have the following columns:
+### Output:
+A stacked area plot showing the energy demand by category (imported energy) over time. The plot includes a legend displaying the area under each category.
 
-- Time: a datetime column representing the time of the energy measurement
-- TotalDemand: a column representing the total energy demand at the given time
-- EV Demand (W): a column representing the energy demand specifically from electric vehicles at the given time
-- PV (W): a column representing the energy production from solar panels at the given time
+### Functionality:
+- The function takes in a DataFrame and resets its index.
+- It then converts the 'Time' column to a datetime format and creates a new figure with a specified size. 
+- Next, it iterates over each row of the DataFrame, and if the 'Imbalance' value is greater than zero, it adds the sum of 'TotalDemand', 'EV Demand (W)', and 'PV (W)' to a new column named 'Energy Imported (W)'.
 
-The output of the function is a matplotlib figure object.
+<b>If Imbaalance > 0:
+
+ Energy Imported (W)=TotalDemand+EV Demand (W)+PV (W)</b>
+
+The function then creates a stackplot using the 'Time' and 'Energy Imported (W)' columns of the DataFrame, with the label 'Energy Imported (W)'. It also creates a legend that displays the label and area for each category.
+
+Finally, the function displays the plot using matplotlib. 
+
+![image.jpg](/data/EnergyImportedOverTime.png)
+
 
 ## **`plot_energy_consumption_over_time`**
+Input:
+- df: pandas DataFrame containing the following columns:
+    - Heating Demand (W): energy consumption for heating in Watts
+    - EV Demand (W): energy consumption for electric vehicles in Watts
+    - General Demand (W): energy consumption for other general purposes in Watts
 
-This function takes a pandas DataFrame containing energy demand and production data, and plots the total energy consumption by category as a bar plot.
+Output:
+- A bar chart showing the total energy consumption by category (heating, electric vehicle, and general)
 
-The input DataFrame is expected to have the following columns:
-
-- TotalDemand: a column representing the total energy demand at the given time
-- EV Demand (W): a column representing the energy demand specifically from electric vehicles at the given time
-- PV (W): a column representing the energy production from solar panels at the given time
-
-The output of the function is a matplotlib figure object.
+![image1.jpg](/data/categorical.png)
 
 ## **`plot_demand_by_hour_and_weekday`**
 
-This function takes a pandas DataFrame containing energy demand and production data, and plots the average energy demand by hour of the day and day of the week as a heatmap.
 
-The input DataFrame is expected to have the following columns:
+### Input: 
+df: A pandas DataFrame containing columns named 'Time' and 'TotalDemand'.
 
-- Time: a datetime column representing the time of the energy measurement
-- TotalDemand: a column representing the total energy demand at the given time
+### Output:
+A heatmap plot showing the average energy demand by hour of day and day of week.
 
-The output of the function is a matplotlib figure object.
+### Functionality:
+- The function takes in a DataFrame and converts the 'Time' column to a datetime format.
+- It then creates two new columns, 'Hour' and 'DayOfWeek', using the datetime information in the 'Time' column.
+- Next, it creates a pivot table that calculates the average 'TotalDemand' for each combination of 'Hour' and 'DayOfWeek'.
+- The function then creates a heatmap plot using seaborn's sns.heatmap() function with the pivot table as input data and the 'YlGnBu' color map.
+- Finally, the function sets the x-axis and y-axis labels and the plot title before displaying the plot using matplotlib.
+![image1.jpg](/data/Heatamap.png)
 
-## **`plot_energy_demand_by_category_over_time`**
 
-This function takes a pandas DataFrame containing energy demand and production data over time, and plots the energy demand over time broken down by category (EV Demand, Imbalance, TotalDemand, PV Production) as a stacked area plot.
-
-The input DataFrame is expected to have the following columns:
-
-- Time: a datetime column representing the time of the energy measurement
-- TotalDemand: a column representing the total energy demand at the given time
-- EV Demand (W): a column representing the energy demand specifically from electric vehicles at the given time
-- Imbalance: a column representing the energy imbalance at the given time
-- PV (W): a column representing the energy production from solar panels at the given time
 
 # Check out the app here
 
