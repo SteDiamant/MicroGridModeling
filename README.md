@@ -11,7 +11,7 @@ This is a web application built using Streamlit that helps users visualize the i
 4. Select a number of PVs to view the energy demand and imbalance profile with and without EVs..
 
 ## Model Topology
-![image.jpg](../data/image.jpg)
+![image.jpg](/data/image.jpg)
 
 ## Code Structure
 
