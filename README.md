@@ -21,7 +21,8 @@ heating demand
 <li>
 general demand 
 </li>
-which are collectively met by the energy generated from photovoltaic (PV) panels.<br>
+<br>
+which are collectively met by the energy generated from photovoltaic (PV) panels.
 Additionally, the model accounts for the energy demand of four electric vehicles (EVs) that require periodic 
 <li>charging</li>
 <li>discharing</li>
