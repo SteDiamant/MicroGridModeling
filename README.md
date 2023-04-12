@@ -134,13 +134,14 @@ To determine the impact of EVs (charge/discharge) on the imbalance curve, we hav
 6. **`data = DatasetMerger.merge_datasets(days[day], charge_discharge)`** merges the **`charge_discharge`** dataset with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`data`** which includes both the original data and the charging and discharging profiles.
 # Check out the app here
 
-[app](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)
-
+Check out the [app](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)!
 # Check out the code here
 
 [https://github.com/SteDiamant/MicroGridModeling](https://github.com/SteDiamant/MicroGridModeling)
 
 # Technical details
+
+## Classes
 
 - `DataLoader.py`: Loads data from a CSV file.
 - `ImbalanceCalculator.py`: Calculates the energy imbalance of the microgrid.
