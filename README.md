@@ -49,7 +49,9 @@ The model topology of the energy demand tool can be described as a sequence of o
 11. `plot_single(data)`: plots energy demand and imbalance profile for a single day.
 12. `calculate_energy_imported(data)`: calculates energy imported from the grid.
 13. `plot_multiple(days, start, end)`: plots energy demand and imbalance profile for multiple days.
-![image2.png](/data/flowChart1.png)Additionally, there are several functions related to generating charging and discharging profiles for electric vehicles (EVs) and merging them with the energy demand data. These include:
+![image2.png](/data/flowChart1.png)
+<br>
+Additionally, there are several functions related to generating charging and discharging profiles for electric vehicles (EVs) and merging them with the energy demand data. These include:
 
 1. `ProfileGenerator.create_charge_profile(days, day)`: generates charging profile for EVs.
 2. `DatasetMerger.merge_datasets(days[day], charge_profile)`: merges charging profile with energy demand data.
