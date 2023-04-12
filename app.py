@@ -74,6 +74,20 @@ class PlotOptions():
                 ax.set_title('Demand Heatmap by Time of Day and Day of Week')
                 plt.show()
                 
+        def plot_imbalance_heatmap(df):
+                #print(df)
+                df.reset_index(inplace=True)
+                df['Time'] = pd.to_datetime(df['Time'])
+                df['Hour'] = df['Time'].dt.hour
+                df['DayOfWeek'] = df['Time'].dt.dayofweek
+                demand_by_hour_weekday = df.pivot_table(index='Hour', columns='DayOfWeek', values='Imbalnace', aggfunc='mean')
+                fig, ax = plt.subplots(figsize=(6, 10))
+                sns.heatmap(demand_by_hour_weekday, cmap='YlGnBu', ax=ax)
+                ax.set_xlabel('Day of Week')
+                ax.set_ylabel('Hour of Day')
+                ax.set_title('Imbalance Heatmap by Time of Day and Day of Week')
+                plt.show()
+                
 
        
         def plot_energy_demand_by_category_over_time(df):
@@ -419,7 +433,7 @@ def main():
                 st.pyplot(PlotOptions.plot_demand_by_hour_and_weekday(data))
                 #print(1)
             with col3:
-                st.pyplot(PlotOptions.plot_energy_consumption_by_category(data))
+                st.pyplot(PlotOptions.plot_imbalance_heatmap(data))
     col1,col2 = st.columns(2)
     with col1:
         st.pyplot(PlotOptions.plot_energy_imported_bar(data1, data))
@@ -440,7 +454,7 @@ def main():
         st.markdown(f"### Impact on Power IMported from the Grid")
         st.markdown(f"- Power imported from the grid without EVs: {calculate_energy_imported(data1)/1000:.2f} kW")
         st.markdown(f"- Power imported from the grid with **{MAX_NO_CARS} EVs**: {calculate_energy_imported(data)/1000:.2f} kW ")
-
+        
     st.title("Daily Plot")
 
     cl1,cl2=st.columns(2)
@@ -491,17 +505,17 @@ if __name__ == '__main__':
     st.sidebar.header('Select the parameters')
 
     st.sidebar.subheader('Choose the number of EVs')
-    MAX_NO_CARS=st.sidebar.selectbox("MaxNoCars1", [1, 2, 3,4])
+    MAX_NO_CARS=st.sidebar.selectbox("MaxNoCars1", [0,1, 2, 3,4,5,6,7,8])
 
     st.sidebar.subheader('Choose the day')
     DAY = st.sidebar.selectbox("Days Index", list(range(1, 362)))
 
     st.sidebar.subheader('Choose the EV charging parameters')
-    CHARGE_TIME=st.sidebar.selectbox("Duration of Charging", [1, 2, 3,4])
+    CHARGE_TIME=st.sidebar.selectbox("Duration of Charging", [1, 2, 3,4,5,6,7])
     MOVE_CHARGING_BEFORE_PEAK_PRODUCTION=st.sidebar.selectbox("Move Charging Profile Before Peak Production Hours",  list(range(0, 5)),0)
 
     st.sidebar.subheader('Choose the EV discharging parameters')
-    DISCHARGE_TIME=st.sidebar.selectbox("Duration of Discharging", [1, 2, 3,4])
+    DISCHARGE_TIME=st.sidebar.selectbox("Duration of Discharging", [1, 2, 3,4,5,6,7,8])
     MOVE_DISCHARGING_BEFORE_PEAK_DEMAND=st.sidebar.selectbox("Move Discharging Profile Before Peak Demand Hours", list(range(0, 5)),0)
 
     main()

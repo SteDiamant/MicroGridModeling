@@ -135,6 +135,11 @@ A heatmap plot showing the average energy demand by hour of day and day of week.
 - Finally, the function sets the x-axis and y-axis labels and the plot title before displaying the plot using matplotlib.
 ![image1.jpg](/data/Heatamap.png)
 
+## **`plot_daily_scale_day`**
+### Positive Impact
+![image1.jpg](/data/PositiveImpact.png)
+### Negative Impact
+![image1.jpg](/data/negativeImpact.png)
 # Check out the app here
 
 Check out the [app](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)!
