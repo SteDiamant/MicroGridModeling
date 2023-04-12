@@ -64,7 +64,16 @@ Additionally, there are several functions related to generating charging and dis
 The tool's workflow can be customized by selecting specific functions based on the user's needs. The resulting visualizations can help users understand and optimize energy usage in the microgrid.
 
 ![image.jpg](/data/image.jpg)
+# **Input Control**
+![image.jpg](/data/InputControl1.png)
+- Current method involves stacking up charge profiles on top of each other.
+- An improvement would be to spread out the individual datasets instead of stacking them up.
+- Spreading out the individual datasets would make it easier to see the details of each charge profile and identify any patterns or trends.
 
+![image.jpg](/data/InputControl2.png)
+- Current method involves stacking up discharge profiles on top of each other.
+- An improvement would be to spread out the individual datasets instead of stacking them up.
+- Spreading out the individual datasets would make it easier to see the details of each discharge profile and identify any patterns or trends.
 # **Energy Data Visualization Functions**
 
 This is a set of four functions for visualizing energy demand and production data using the pandas and matplotlib libraries in Python.
@@ -122,6 +131,13 @@ A heatmap plot showing the average energy demand by hour of day and day of week.
 - Finally, the function sets the x-axis and y-axis labels and the plot title before displaying the plot using matplotlib.
 ![image1.jpg](/data/Heatamap.png)
 
+# Check out the app here
+
+Check out the [app](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)!
+# Check out the code here
+
+[https://github.com/SteDiamant/MicroGridModeling](https://github.com/SteDiamant/MicroGridModeling)
+
 
 ## Discussion Topics:
 
@@ -133,13 +149,6 @@ To determine the impact of EVs (charge/discharge) on the imbalance curve, we hav
 4. **`day_discharge = DatasetMerger.merge_datasets(days[day], discharge_profile)`** merges the generated discharging profile with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`day_discharge`** which includes the original data and the generated discharging profile.
 5. **`charge_discharge = pd.concat([charge_profile, discharge_profile])`** concatenates the charging and discharging profiles into a single dataset called **`charge_discharge`** using the **`concat`** method from the Pandas library.
 6. **`data = DatasetMerger.merge_datasets(days[day], charge_discharge)`** merges the **`charge_discharge`** dataset with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`data`** which includes both the original data and the charging and discharging profiles.
-# Check out the app here
-
-Check out the [app](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)!
-# Check out the code here
-
-[https://github.com/SteDiamant/MicroGridModeling](https://github.com/SteDiamant/MicroGridModeling)
-
 # Technical details
 
 ## Classes
