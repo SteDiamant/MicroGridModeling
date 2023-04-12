@@ -186,4 +186,6 @@ To determine the impact of EVs (charge/discharge) on the imbalance curve, we hav
 - `calculate_energy_imported(data)`: Calculates the energy imported from the grid.
 - `plot_multiple(days, start, end)`: Plots the energy demand and imbalance profile for multiple days.
 
-"""
+# New Features
+
+![image1.jpg](/data/NewFeature1.png)
