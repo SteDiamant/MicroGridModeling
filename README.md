@@ -74,6 +74,10 @@ The tool's workflow can be customized by selecting specific functions based on t
 - Current method involves stacking up discharge profiles on top of each other.
 - An improvement would be to spread out the individual datasets instead of stacking them up.
 - Spreading out the individual datasets would make it easier to see the details of each discharge profile and identify any patterns or trends.
+![image.jpg](/data/DailyPlots.png)
+- The program calculates the total energy imported for a neighborhood based on the TotalDemand, EV Demand (W), and PV (W) values in the dataset
+- Generates statistics for the TotalDemand and PV Production columns.
+- The program calculates the total cost of energy imported using a fixed rate of $0.45 per kWh, and outputs the result in the markdown.
 # **Energy Data Visualization Functions**
 
 This is a set of four functions for visualizing energy demand and production data using the pandas and matplotlib libraries in Python.
