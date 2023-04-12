@@ -1,4 +1,5 @@
 # A tool to investigate the impact of 4 EVs to Aardenhuizen region
+![image1.png](/data/image.png)
 ## Main Questions
   - What are the impacts on the load curve when multiple EVs are introduced (max 4)? 
   - What are the strategies to minimize the load imbalance?
