@@ -137,7 +137,7 @@ A heatmap plot showing the average energy demand by hour of day and day of week.
 
 ## **`plot_daily_scale_day`**
 ### Positive Impact
-![image1.jpg](/data/PositiveImpact.png)
+![image1.jpg](/data/positiveImpact.png)
 ### Negative Impact
 ![image1.jpg](/data/negativeImpact.png)
 # Check out the app here
