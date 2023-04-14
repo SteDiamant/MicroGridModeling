@@ -262,7 +262,8 @@ class DatasetMerger():
         merged_df1['Imbalnace'] = merged_df1['General Demand (W)'] + merged_df1['EV Demand (W)'] + merged_df1['PV (W)'] + merged_df1['Heating Demand (W)']
 
         # Add Imbalance check column
-        merged_df1['Imbalance_check'] = merged_df1['Imbalnace'].apply(lambda x: True if x >= 0 else False)
+        #merged_df1['Imbalance_check'] = merged_df1['Imbalnace'].apply(lambda x: True if x >= 0 else False)
+        
         return merged_df1
      
 class Plotter:
@@ -362,12 +363,12 @@ def plot_miltiple(days,day_start,day_end):
         merged_data = pd.DataFrame()
         for i in range(day_start, day_end):
             day_data = get_day_data(days, i)
-            merged_data = pd.concat([merged_data, day_data], ignore_index=True)
-        # plot the merged data
+            merged_data = pd.concat([merged_data, day_data])
+        merged_data.to_csv('days.csv')
         return(merged_data)
 
 def main():
-    
+
     st.title("EV Impact on Microgrid Energy Demand Visualizer")
     
     
@@ -375,7 +376,6 @@ def main():
     df= ImbalanceCalculator.calculate_imbalance(df)
     days = DateTimeSplitter().split_dataframe_by_day(df)
     """
-
     """
     col1, col2 = st.columns(2)
     with col1:
@@ -462,7 +462,9 @@ def main():
         start=st.selectbox("StartDate", list(range(1, 362)))
         end=st.selectbox("EndDAte", list(range(1, 362)),1)
         data2=(plot_miltiple(days, start, end))
+        
         st.write(Plotter.plot(data2))
+        
     with cl2:
         
         mean_total_demand = data2['TotalDemand'].mean()
@@ -505,7 +507,7 @@ if __name__ == '__main__':
     st.sidebar.header('Select the parameters')
 
     st.sidebar.subheader('Choose the number of EVs')
-    MAX_NO_CARS=st.sidebar.selectbox("MaxNoCars1", [0,1, 2, 3,4,5,6,7,8])
+    MAX_NO_CARS=st.sidebar.selectbox("MaxNoCars1", [0,1, 2, 3,4,5,6,7,8,10])
 
     st.sidebar.subheader('Choose the day')
     DAY = st.sidebar.selectbox("Days Index", list(range(1, 362)))

@@ -190,3 +190,4 @@ To determine the impact of EVs (charge/discharge) on the imbalance curve, we hav
 # New Features
 
 ![image1.jpg](/data/NewFeature1.png)
+![image1.jpg](/data/NewFeature2.png)
