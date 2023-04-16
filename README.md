@@ -150,7 +150,7 @@ A heatmap plot showing the average energy demand by hour of day and day of week.
 # Check out the [Profile Generator!!](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)
 ![image1.jpg](/data/qrcode001.png)<br>
 
-# Check out the [Strategy Comparison!!](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)
+# Check out the [Strategy Comparison!!](https://stediamant-microgridmodeling-run2app-7pu80d.streamlit.app/)
 ![image1.jpg](/data/qrcode002.png)<br>
 
 ## Discussion Topics:
