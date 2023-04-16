@@ -153,16 +153,20 @@ A heatmap plot showing the average energy demand by hour of day and day of week.
 # Check out the [Strategy Comparison!!](https://stediamant-microgridmodeling-run2app-7pu80d.streamlit.app/)
 ![image1.jpg](/data/qrcode002.png)<br>
 
-## Discussion Topics:
+# StrategyComparisonTool:
 
-To determine the impact of EVs (charge/discharge) on the imbalance curve, we have to generate the corresponding datasets for charge and discharge for chosen day, and afterwards we have to merge the original dataset and the charge/discharge dataset.
+![image1.png](/data/ImbalanceComparison.png)
 
-1. **`charge_profile = ProfileGenerator.create_charge_profile(days, day)`** generates a charging profile for a specific day using the **`create_charge_profile`** method from the **`ProfileGenerator`** class, which takes a dictionary of daily data and a day as inputs.
-2. **`day_charge = DatasetMerger.merge_datasets(days[day], charge_profile)`** merges the generated charging profile with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`day_charge`** which includes the original data and the generated charging profile.
-3. **`discharge_profile = ProfileGenerator.create_discharge_profile(days, day)`** generates a discharging profile for the same day using the **`create_discharge_profile`** method from the **`ProfileGenerator`** class.
-4. **`day_discharge = DatasetMerger.merge_datasets(days[day], discharge_profile)`** merges the generated discharging profile with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`day_discharge`** which includes the original data and the generated discharging profile.
-5. **`charge_discharge = pd.concat([charge_profile, discharge_profile])`** concatenates the charging and discharging profiles into a single dataset called **`charge_discharge`** using the **`concat`** method from the Pandas library.
-6. **`data = DatasetMerger.merge_datasets(days[day], charge_discharge)`** merges the **`charge_discharge`** dataset with the original data for the specified day using the **`merge_datasets`** method from the **`DatasetMerger`** class. This creates a new dataset called **`data`** which includes both the original data and the charging and discharging profiles.
+Imbalance is a measure of the difference between the electricity generation and consumption in a power system, and it can have significant impacts on the stability and reliability of the grid.
+
+
+If the goal of the strategy is to minimize the imbalance in the power system, then the aim is to make the heatmap for Imbalance metric as white as possible.
+
+A white cell in the heatmap means that the generation and consumption of electricity in the power system are balanced, and there is no significant difference between them. This indicates that the power system is stable and reliable.
+
+![image1.png](/data/ImbalanceByDay&Season.png)
+![image1.png](/data/ImblanaceRangeEffect.png)
+![image1.png](/data/ReneablleEnergyStatistics.png)
 # Technical details
 
 ## Classes
