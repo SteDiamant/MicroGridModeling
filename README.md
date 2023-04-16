@@ -1,19 +1,27 @@
 # A tool to investigate the impact of 4 EVs to Aardenhuizen region
 ![image1.png](/data/image.png)
-## Main Questions
+# Main Questions
   - What are the impacts on the load curve when multiple EVs are introduced (max 4)? 
   - What are the strategies to minimize the load imbalance?
   - How will the charge/discharge cycle and speed reduce the car battery's state of health?
-## Introduction
+# Introduction
 The Aardenhuizen community is a small region consisting of 24 households. The community has installed 327 solar panels to generate electricity and four electric vehicles (EVs) to promote sustainable transportation.
 The community members are committed to reducing their carbon footprint by adopting environmentally friendly practices. They prioritize the use of renewable energy sources, such as solar power, to minimize their reliance on non-renewable energy sources.
-## Methodology
+# Methodology
 Agile methodology is a project management approach that emphasizes flexibility, collaboration, and continuous improvement. While Agile is most commonly associated with software development, it can also be applied to research projects.
 
 
 ![image1.png](/data/Agile-Methodology.png)
 
 One of the key principles of Agile methodology is the ability to adapt to changing circumstances. In research, this could mean adjusting the project plan based on new data or insights, or pivoting the focus of the project based on emerging trends or opportunities.
+# Tool Overview
+The designed tool consists of two software programs. The first software reads the original dataset and user input variables such as </br>
+<li>MAX_NO_CARS, which determines the height of the charge and discharge curve, <li>CHARGING_DURATION, which determines the duration of the charge, <li>MOVE_CHARGING_DURATION_BEFORE_PEAK_TIME, which determines how early the charging process will start before the estimated maximum production timestamp, <li>DISCHARGING_DURATION, which determines the duration of the discharge, and <li>MOVE_DISCHARGING_TIME_BEFORE_PEAK_TIME, which determines how early the discharging process will start before the estimated maximum demand timestamp.</li>
+
+
+![image2.png](/data/tools.png)
+The Second software load 2 strategies and compares them next to each other several plots and Visualizatiosn are used to estimate the impact of the strategy to the imbalance curve .
+
 ## High Level Model Architecture
 At a high level, the model represents the energy demand of a household with two main components 
 <li>
@@ -37,19 +45,7 @@ Therefore, the total energy demand of the household is the sum of heating demand
 
 The model topology of the energy demand tool can be described as a sequence of operations that takes energy demand data as input, calculates various metrics, and produces visualizations of the data in different forms. The following is a high-level overview of the tool's main functions:
 
-1. `load_data()`: loads energy demand data.
-2. `calculate_imbalance(df)`: calculates energy imbalance of the microgrid.
-3. `split_dataframe_by_day(df)`: splits energy demand data into individual days.
-4. `max_demand(df, n)`: returns top n demand values from energy demand data.
-5. `max_production(df, n)`: returns top n production values from energy demand data.
-6. `calculate_area(data)`: calculates area under the curve of energy demand profile.
-7. `plot_energy_demand_by_category_over_time(data)`: visualizes energy demand data by category over time.
-8. `plot_energy_demand_over_time(data)`: visualizes energy demand data over time.
-9. `plot_demand_by_hour_and_weekday(data)`: visualizes energy demand data by hour and weekday.
-10. `plot_energy_consumption_by_category(data)`: visualizes energy consumption data by category.
-11. `plot_single(data)`: plots energy demand and imbalance profile for a single day.
-12. `calculate_energy_imported(data)`: calculates energy imported from the grid.
-13. `plot_multiple(days, start, end)`: plots energy demand and imbalance profile for multiple days.
+
 ![image2.png](/data/flowChart1.png)
 <br>
 Additionally, there are several functions related to generating charging and discharging profiles for electric vehicles (EVs) and merging them with the energy demand data. These include:
@@ -65,19 +61,28 @@ The tool's workflow can be customized by selecting specific functions based on t
 
 ![image.jpg](/data/image.jpg)
 # **Input Control**
-![image.jpg](/data/InputControl1.png)
-- Current method involves stacking up charge profiles on top of each other.
-- An improvement would be to spread out the individual datasets instead of stacking them up.
-- Spreading out the individual datasets would make it easier to see the details of each charge profile and identify any patterns or trends.
+**MAX_NO_CARS** : A Variable that represents the maximum number of cars.
+![image.jpg](/data/max_CARS_INPUT.png)
+**Profile Impact**: Control The Height of the Charging profile
 
+----------------------------------------------------------------
+**DURATION_OF_DISCHARGING**: A variable that represent the duration of discharging with respect to the prediction of the maximum demand Timestamp.<br>
+**MOVE DISCHARGING PROFILE BEFORE PEAK DEMAND**: A variable that represent the duration of discharging with respect to the prediction of the maximum demand Timestamp.
+![image.jpg](/data/InputControl1.png)
+**Profile Impact**: Control the Width of the discahrging with respect to the maximum demand Timestamp
+
+----------------------------------------------------------------
+**DURATION_OF_CHARGING**: A variable that represent the duration of charging with respect to the prediction of the maximum production Timestamp.<br>
+**MOVE DISCHARGING PROFILE BEFORE PEAK DEMAND**: A variable that represent the duration of charging with respect to the prediction of the maximum demand Timestamp.
 ![image.jpg](/data/InputControl2.png)
-- Current method involves stacking up discharge profiles on top of each other.
-- An improvement would be to spread out the individual datasets instead of stacking them up.
-- Spreading out the individual datasets would make it easier to see the details of each discharge profile and identify any patterns or trends.
+**Profile Impact**: Control the Width of the discahrging with respect to the maximum demand Timestamp
+
+----------------------------------------------------------------
+**Daily_Plots**:Variables that represent the start and End date that i want to generate profiles for .
 ![image.jpg](/data/DailyPlots.png)
-- The program calculates the total energy imported for a neighborhood based on the TotalDemand, EV Demand (W), and PV (W) values in the dataset
-- Generates statistics for the TotalDemand and PV Production columns.
-- The program calculates the total cost of energy imported using a fixed rate of $0.45 per kWh, and outputs the result in the markdown.
+**Profile Impact**: This tool allows the user to customize the range of charging and discharging patterns for a given dataset. The tool scales the profile to fit a custom daily dataset by means of controling the start and end date.
+
+----------------------------------------------------------------
 # **Energy Data Visualization Functions**
 
 This is a set of four functions for visualizing energy demand and production data using the pandas and matplotlib libraries in Python.
@@ -140,14 +145,13 @@ A heatmap plot showing the average energy demand by hour of day and day of week.
 ![image1.jpg](/data/positiveImpact.jpg)
 ### Negative Impact
 ![image1.jpg](/data/negativeImpact.jpg)
-# Check out the app here
 
+
+# Check out the [Profile Generator!!](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)
 ![image1.jpg](/data/qrcode001.png)<br>
-## Check out the [APP HERE!!](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)
-# Check out the code here
 
-[https://github.com/SteDiamant/MicroGridModeling](https://github.com/SteDiamant/MicroGridModeling)
-
+# Check out the [Strategy Comparison!!](https://stediamant-microgridmodeling-app-c9e9e9.streamlit.app/)
+![image1.jpg](/data/qrcode002.png)<br>
 
 ## Discussion Topics:
 
@@ -187,7 +191,7 @@ To determine the impact of EVs (charge/discharge) on the imbalance curve, we hav
 - `calculate_energy_imported(data)`: Calculates the energy imported from the grid.
 - `plot_multiple(days, start, end)`: Plots the energy demand and imbalance profile for multiple days.
 
-# New Features
-
+# Strategy Comparison Tool
+Assessing the effectiveness of various strategies and their influence on the Imbalance Curve can be challenging. To gain a deeper comprehension of the correlation between strategies and their impact on the Imbalance Curve, a tool that utilizes basic metrics and suitable visualizations will be employed. This will aid in accurately estimating the relationship between different strategies and their effect on the Imbalance Curve.
 ![image1.jpg](/data/NewFeature1.png)
 ![image1.jpg](/data/NewFeature2.png)
