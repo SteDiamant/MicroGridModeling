@@ -92,7 +92,7 @@ class EnergyMetrics:
         
         # Create a bar chart of the energy consumption by season
         fig, ax = plt.subplots()
-        fig.set_size_inches(9, 10)
+        
         ax.bar(result.index, result.values)
         ax.set_xlabel('Season')
         ax.set_ylabel(f'{metric} mean (million units)')
