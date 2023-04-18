@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import json
-from tabulate import tabulate
+
 
 
 st. set_page_config(layout="wide")
@@ -282,12 +282,12 @@ def main():
             message_w,plot_w=em2.energy_consumption_by_day(choice1)
             c122, c222 = st.columns(2)
             with c122:
-                st.write(message_w,'\n')
+                st.write(json.dumps(message),'\n')
                 st.write(plot_w)
             st.write("----------------------------------------------")  
             with c222:
-                table = tabulate(message, headers='keys', tablefmt='psql')
-                st.write(table)
+                
+                st.write(json.dumps(message))
                 st.pyplot(plot)
 
             st.subheader('**Imbalance Range With Strategy**')
