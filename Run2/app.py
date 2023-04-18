@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import tabulate 
 st. set_page_config(layout="wide")
 
 class EnergyKPIs:
