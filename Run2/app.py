@@ -81,7 +81,7 @@ class EnergyMetrics:
         result = self.data.groupby(['Hour', 'DayOfWeek'])['TotalDemand'].mean().unstack().round(2)
         markdown = result.to_json()
         
-        test=1
+        
         return f'Average energy consumption by hour and day of the week:\n\n{markdown}'
 
 
