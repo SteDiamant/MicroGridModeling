@@ -282,12 +282,12 @@ def main():
             message_w,plot_w=em2.energy_consumption_by_day(choice1)
             c122, c222 = st.columns(2)
             with c122:
-                st.write(json.dumps(message),'\n')
+                st.write(json.dumps(message_w),'\n')
                 st.write(plot_w)
             st.write("----------------------------------------------")  
             with c222:
                 
-                st.write(json.dumps(message_w))
+                st.write(json.dumps(message))
                 st.pyplot(plot)
 
             st.subheader('**Imbalance Range With Strategy**')
