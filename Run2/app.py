@@ -232,7 +232,8 @@ def main():
         c1, c2 = st.columns(2)
         with c1:
             st.subheader('NoStrategy')
-            choice=st.selectbox(label='Metric',options=(df1.columns[1:]),choice='Imbalnace')
+            choice = 'Imbalnace'
+            choice=st.selectbox(label='Metric',options=(df1.columns[1:]))
             st.write(plot_imbalance_heatmap(df1,choice))
             st.write("----------------------------------------------")  
             positive_imbalance_avg = df1[df1['Imbalnace'] > 0]['Imbalnace'].mean()
@@ -274,7 +275,8 @@ def main():
             
         with c2:
             st.subheader('Strategy')
-            choice1=st.selectbox(label='Metric',options=(df2.columns[3:]),choice='Imbalnace')
+            choice1 = 'Imbalnace'
+            choice1=st.selectbox(label='Metric',options=(df2.columns[3:]))
             st.write(plot_imbalance_heatmap(df2,choice1))
             st.write("----------------------------------------------")  
             em2 = EnergyMetrics(df2)
