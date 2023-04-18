@@ -110,19 +110,19 @@ class EnergyMetrics:
         weekdays = self.data['DayOfWeek']
         
         # Group the data by day of the week and calculate the mean for the specified metric
-        result = self.data.groupby(weekdays)[metric].mean().round(2)
+        result1 = self.data.groupby(weekdays)[metric].mean().round(2)
         
         # Create a bar chart of the energy consumption by day of the week
         fig, ax = plt.subplots()
         fig.set_size_inches(9, 10)
-        ax.bar(result.index, result.values)
+        ax.bar(result1.index, result1.values)
         ax.set_xlabel('Day of the week')
         ax.set_xticklabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
         ax.set_ylabel(f'{metric} mean (million units)')
         ax.set_title(f'{metric} mean by Day of the week')
         
         # Return the markdown table and the plot
-        return f'{metric} by day of the week:{result.to_json}', fig
+        return f'{metric} by day of the week:{result1.to_json()}', fig
 
 @st.cache_resource
 def load_data():
