@@ -287,7 +287,7 @@ def main():
             st.write("----------------------------------------------")  
             with c222:
                 
-                st.write(json.dumps(message))
+                st.write(json.dumps(message_w))
                 st.pyplot(plot)
 
             st.subheader('**Imbalance Range With Strategy**')
