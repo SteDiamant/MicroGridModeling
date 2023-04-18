@@ -102,7 +102,7 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Season')
     
         # Return the markdown table and the plot
-        return f"""{metric} by season:{result.to_json()}\n""", fig
+        return f"""{metric} by season:\n{result.to_json()}""", fig
  
 
     def  energy_consumption_by_day(self, metric):
