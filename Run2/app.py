@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import json
-
+from tabulate import tabulate
 
 
 st. set_page_config(layout="wide")
@@ -102,7 +102,7 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Season')
     
         # Return the markdown table and the plot
-        return f'{metric} by season:\n\n{result.to_json()}', fig
+        return f"""{metric} by season:\n\n\n{result.to_json()}""", fig
  
 
     def  energy_consumption_by_day(self, metric):
