@@ -14,15 +14,7 @@ Agile methodology is a project management approach that emphasizes flexibility, 
 ![image1.png](/data/Agile-Methodology.png)
 
 One of the key principles of Agile methodology is the ability to adapt to changing circumstances. In research, this could mean adjusting the project plan based on new data or insights, or pivoting the focus of the project based on emerging trends or opportunities.
-# Tool Overview
-The designed tool consists of two software programs. The first software reads the original dataset and user input variables such as </br>
-<li>MAX_NO_CARS, which determines the height of the charge and discharge curve, <li>CHARGING_DURATION, which determines the duration of the charge, <li>MOVE_CHARGING_DURATION_BEFORE_PEAK_TIME, which determines how early the charging process will start before the estimated maximum production timestamp, <li>DISCHARGING_DURATION, which determines the duration of the discharge, and <li>MOVE_DISCHARGING_TIME_BEFORE_PEAK_TIME, which determines how early the discharging process will start before the estimated maximum demand timestamp.</li>
-
-
-![image2.png](/data/tools.png)
-The Second software load 2 strategies and compares them next to each other several plots and Visualizatiosn are used to estimate the impact of the strategy to the imbalance curve .
-
-## High Level Model Architecture
+# High Level Model Architecture
 At a high level, the model represents the energy demand of a household with two main components 
 <li>
 heating demand 
@@ -38,6 +30,16 @@ Additionally, the model accounts for the energy demand of four electric vehicles
 Therefore, the total energy demand of the household is the sum of heating demand, general demand, and the charging requirements of the EVs.
 
 ![image.jpg](/data/MODEL_PLAN.png)(https://www.cleanenergyreviews.info/blog/bidirectional-ev-charging-v2g-v2h-v2l)
+
+# Tool Overview
+The designed tool consists of two software programs. The first software reads the original dataset and user input variables such as </br>
+<li>MAX_NO_CARS, which determines the height of the charge and discharge curve, <li>CHARGING_DURATION, which determines the duration of the charge, <li>MOVE_CHARGING_DURATION_BEFORE_PEAK_TIME, which determines how early the charging process will start before the estimated maximum production timestamp, <li>DISCHARGING_DURATION, which determines the duration of the discharge, and <li>MOVE_DISCHARGING_TIME_BEFORE_PEAK_TIME, which determines how early the discharging process will start before the estimated maximum demand timestamp.</li>
+
+
+![image2.png](/data/tools.png)
+The Second software load 2 strategies and compares them next to each other several plots and Visualizatiosn are used to estimate the impact of the strategy to the imbalance curve .
+
+## Profile Generator
 
 
 ## Model Topology
@@ -75,7 +77,7 @@ The tool's workflow can be customized by selecting specific functions based on t
 **DURATION_OF_CHARGING**: A variable that represent the duration of charging with respect to the prediction of the maximum production Timestamp.<br>
 **MOVE DISCHARGING PROFILE BEFORE PEAK DEMAND**: A variable that represent the duration of charging with respect to the prediction of the maximum demand Timestamp.
 ![image.jpg](/data/InputControl2.png)
-**Profile Impact**: Control the Width of the discahrging with respect to the maximum demand Timestamp
+**Profile Impact**: Control the Width of the charging with respect to the maximum demand Timestamp
 
 ----------------------------------------------------------------
 **Daily_Plots**:Variables that represent the start and End date that i want to generate profiles for .
@@ -102,7 +104,7 @@ A stacked area plot showing the energy demand by category (imported energy) over
 
 <b>If Imbaalance > 0:
 
- Energy Imported (W)=TotalDemand+EV Demand (W)+PV (W)</b>
+Energy Imported (W)=TotalDemand+EV Demand (W)+PV (W)</b>
 
 The function then creates a stackplot using the 'Time' and 'Energy Imported (W)' columns of the DataFrame, with the label 'Energy Imported (W)'. It also creates a legend that displays the label and area for each category.
 

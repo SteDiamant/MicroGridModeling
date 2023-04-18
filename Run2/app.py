@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+st. set_page_config(layout="wide")
 
 class EnergyKPIs:
     def __init__(self, data):
@@ -75,7 +75,12 @@ class EnergyMetrics:
     
     def average_energy_consumption_by_hour_and_day(self):
         result = self.data.groupby(['Hour', 'DayOfWeek'])['TotalDemand'].mean().unstack().round(2)
-        return f'Average energy consumption by hour and day of the week:\n\n{result.to_markdown()}'
+        markdown = result.to_markdown()
+        
+       
+        return f'Average energy consumption by hour and day of the week:\n\n{markdown}'
+
+
     
     def energy_consumption_by_season(self,metric):
         
@@ -86,16 +91,19 @@ class EnergyMetrics:
         
         # Create a bar chart of the energy consumption by season
         fig, ax = plt.subplots()
+        fig.set_size_inches(9, 10)
         ax.bar(result.index, result.values)
         ax.set_xlabel('Season')
         ax.set_ylabel(f'{metric} mean (million units)')
         ax.set_title(f'{metric} mean by Season')
+        markdown = result.to_markdown()
+        # wrap the markdown in an HTML div tag with a style attribute that sets the font size
         
         # Return the markdown table and the plot
-        return f'Energy {metric} by season:\n\n{result.to_csv()}', fig
+        return f"""{metric} by season:\n\n\n{markdown}\n""", fig
  
 
-    def energy_consumption_by_day(self, metric):
+    def  energy_consumption_by_day(self, metric):
         # Calculate the day of the week for each timestamp
         weekdays = self.data['DayOfWeek']
         
@@ -111,12 +119,16 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Day of the week')
         
         # Return the markdown table and the plot
-        return f'Energy {metric} by day of the week:\n\n{result.to_csv()}', fig
+        return f'Energy {metric} by day of the week:\n\n{result.to_markdown()}', fig
 
 @st.cache_resource
 def load_data():
-        df1 = pd.read_csv(r"Run2/strategies/data_original.csv")
-        df2 = pd.read_csv(r"Run2/strategies/days.csv")
+        ##FOR GITHUB
+        ##df1 = pd.read_csv(r"Run2/strategies/data_original.csv")
+        ##df2 = pd.read_csv(r"Run2/strategies/days.csv")
+        ###FOR LOCAL
+        df1 = pd.read_csv(r"strategies\strategy_0.csv")
+        df2 = pd.read_csv(r"strategies\strategy_1.csv")
         df2.rename(columns={'Unnamed: 0':'Time'},inplace=True)
         df1['PV (W)']=df1['PV (W)']*327
         df1['Imbalnace']=df1['General Demand (W)']+df1['Heating Demand (W)']+df1['PV (W)']+df1['EV Demand (W)']
@@ -223,15 +235,18 @@ def main():
             message_w,plot_w=em.energy_consumption_by_day(choice)
             c121, c221 = st.columns(2)
             with c121:
+                
                 st.write(message_w)
                 
                 st.pyplot(plot_w)
-            st.write("----------------------------------------------")  
+             
             with c221:
                 st.write(message)
+                
+                
                 st.pyplot(plot)
             
-        
+            st.write("----------------------------------------------") 
             
             st.subheader('**Imbalance Range Without Strategy**')
             st.write("Average positive Imbalnace:", str(round(positive_imbalance_avg)))
@@ -244,6 +259,9 @@ def main():
             ax.axhline(y=negative_imbalance_avg, color='r', linestyle='--', label='Average negative imbalance: {:.2f}'.format(negative_imbalance_avg))
             ax.legend()
             st.pyplot(fig)
+
+
+           
              
             
         with c2:
@@ -257,19 +275,16 @@ def main():
             negative_imbalance_avg1 = df2[df2['Imbalnace'] <= 0]['Imbalnace'].mean()
 
 
-            st.subheader(f'{choice1},by day of teh week & Season')
+            st.subheader(f'{choice1},by day of the week & Season')
             message,plot=em2.energy_consumption_by_season(choice1)
             message_w,plot_w=em2.energy_consumption_by_day(choice1)
             c122, c222 = st.columns(2)
             with c122:
                 st.write(message_w,'\n')
-                
-
                 st.write(plot_w)
             st.write("----------------------------------------------")  
             with c222:
                 st.write(message)
-                
                 st.pyplot(plot)
 
             st.subheader('**Imbalance Range With Strategy**')
@@ -284,6 +299,8 @@ def main():
             ax2.axhline(y=negative_imbalance_avg1, color='r', linestyle='--', label='Average negative imbalance: {:.2f}'.format(negative_imbalance_avg1))
             ax2.legend()
             st.pyplot(fig1)
+
+            
             
     st.write("----------------------------------------------")
     with st.container() as c2:
@@ -343,6 +360,13 @@ def main():
              c41,c42=st.columns(2)
              with c41:
                 st.write("**Strategy Efficiency:**", str(round(energy_kpis.count_strategy_violations(),2)))
+                import_energy_data1=df1['Energy Imported (W)'].sum()
+                import_energy_data2=df2['Energy Imported (W)'].sum()
+                st.write("**Energy Imported Without Strategy:**", str(round(import_energy_data1)))
+                st.write("**Energy Imported With Strategy:**", str(round(import_energy_data2)))
+                st.write("**Imported Energy Strategy Comparison Ratio:**", str(round(import_energy_data2/import_energy_data1,3)*100),'%')
+                st.write('**Imported Energyy Difference:**',str(round(import_energy_data1-import_energy_data2)),'W')
+                st.write("**Cost Savings:**", str(round(((import_energy_data1-import_energy_data2)/1000)*0.45,2)),'$')
 if __name__ == '__main__':
        
        main()
