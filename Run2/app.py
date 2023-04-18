@@ -102,7 +102,7 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Season')
     
         # Return the markdown table and the plot
-        return f"""{metric} by season:\n\n\n{result.to_json()}""", fig
+        return f"""{metric} by season:{result.to_json()}""", fig
  
 
     def  energy_consumption_by_day(self, metric):
@@ -114,6 +114,7 @@ class EnergyMetrics:
         
         # Create a bar chart of the energy consumption by day of the week
         fig, ax = plt.subplots()
+        fig.set_size_inches(9, 10)
         ax.bar(result.index, result.values)
         ax.set_xlabel('Day of the week')
         ax.set_xticklabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
@@ -121,7 +122,7 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Day of the week')
         
         # Return the markdown table and the plot
-        return f'Energy {metric} by day of the week:\n\n{result.to_json}', fig
+        return f'{metric} by day of the week:{result.to_json()}', fig
 
 @st.cache_resource
 def load_data():
@@ -129,8 +130,8 @@ def load_data():
         ##df1 = pd.read_csv(r"Run2/strategies/data_original.csv")
         ##df2 = pd.read_csv(r"Run2/strategies/days.csv")
         ###FOR LOCAL
-        df1 = pd.read_csv(r"Run2/strategies/strategy_0.csv")
-        df2 = pd.read_csv(r"Run2/strategies/strategy_1.csv")
+        df1 = pd.read_csv(r"strategies/strategy_0.csv")
+        df2 = pd.read_csv(r"strategies/strategy_1.csv")
         df2.rename(columns={'Unnamed: 0':'Time'},inplace=True)
         df1['PV (W)']=df1['PV (W)']*327
         df1['Imbalnace']=df1['General Demand (W)']+df1['Heating Demand (W)']+df1['PV (W)']+df1['EV Demand (W)']
@@ -237,13 +238,13 @@ def main():
             message_w,plot_w=em.energy_consumption_by_day(choice)
             c121, c221 = st.columns(2)
             with c121:
+                st.write(json.dumps(message_w))
                 
-                st.write(message_w)
                 
                 st.pyplot(plot_w)
              
             with c221:
-                st.write(message)
+                st.write(json.dumps(message))
                 
                 
                 st.pyplot(plot)
@@ -282,7 +283,7 @@ def main():
             message_w,plot_w=em2.energy_consumption_by_day(choice1)
             c122, c222 = st.columns(2)
             with c122:
-                st.write(json.dumps(message_w),'\n')
+                st.write(json.dumps(message_w))
                 st.write(plot_w)
             st.write("----------------------------------------------")  
             with c222:
