@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import json
+from matplotlib.lines import Line2D
 
 
 
@@ -194,12 +195,13 @@ def plot_installed_capacity(pv_capacity, ev_capacity, total_capacity):
         fig, ax = plt.subplots()
         ax.bar(["PV Capacity", "EV Discharging Capacity", "Total Installed Capacity"], 
             [pv_capacity, ev_capacity, total_capacity])
-        ax.set_ylabel("Powe (W)")
+        ax.set_ylabel("Power (W)")
         ax.set_title("Installed Capacity")
         ax.tick_params(axis='x', rotation=15)
         
 
         return fig
+
 def station_utilization(charging,discharging):
         fig, ax = plt.subplots()
         ax.bar(["Total Charging", "Total Discharging"], 
@@ -209,6 +211,7 @@ def station_utilization(charging,discharging):
         ax.tick_params(axis='x', rotation=15)
 
         return fig
+
 def EV_Green(charging,discharging,total):
         fig, ax = plt.subplots()
         ax.bar(["Total PV Production", "Reneables Used For EV Charging",'Total energy imported'], 
@@ -361,8 +364,8 @@ def main():
         # Meaure Strategy Efficiency
         st.subheader("Strategy Efficiency")
         with st.container() as c4:
-             c41,c42=st.columns(2)
-             with c41:
+            c41,c42=st.columns([1,3])
+            with c41:
                 st.write("**Strategy Efficiency:**", str(round(energy_kpis.count_strategy_violations(),2)))
                 import_energy_data1=df1['Energy Imported (W)'].sum()
                 import_energy_data2=df2['Energy Imported (W)'].sum()
@@ -371,6 +374,48 @@ def main():
                 st.write("**Imported Energy Strategy Comparison Ratio:**", str(round(import_energy_data2/import_energy_data1,3)*100),'%')
                 st.write('**Imported Energyy Difference:**',str(round(import_energy_data1-import_energy_data2)),'W')
                 st.write("**Cost Savings:**", str(round(((import_energy_data1-import_energy_data2)/1000)*0.45,2)),'$')
+                total_charge_Ev_load1= df2[df2['EV Demand (W)'] > 0]['EV Demand (W)'].sum()/1000
+                st.write("**Total Charge EV Load:**", str(round(total_charge_Ev_load1)),'W')
+                fig,ax= plt.subplots()
+                ax.bar(['Energy Saved','Total Charge EV Load'],[import_energy_data1-import_energy_data2,total_charge_Ev_load1])
+                st.pyplot(fig)
+            with c42:
+                window_size = 96
+
+                                
+                # Calculate rolling mean imbalance
+                imbalance1=df1['Imbalnace'].rolling(window_size).mean()
+                imbalance2=df2['Imbalnace'].rolling(window_size).mean()
+
+                # Plot the rolling means and horizontal lines
+                fig, ax = plt.subplots()
+                fig.set_size_inches(10, 5)
+                ax.plot(imbalance1)
+                ax.plot(imbalance2)
+                ax.axhline(y=positive_imbalance_avg, color='blue', linestyle='--', label='Positive imbalance ST1: {:.2f}'.format(positive_imbalance_avg))
+                ax.axhline(y=negative_imbalance_avg, color='black', linestyle='--', label='Negative imbalance ST1: {:.2f}'.format(negative_imbalance_avg))
+                ax.axhline(y=positive_imbalance_avg1, color='red', linestyle='--', label='Positive imbalance ST2: {:.2f}'.format(positive_imbalance_avg1))
+                ax.axhline(y=negative_imbalance_avg1, color='orange', linestyle='--', label='Negative imbalance ST2: {:.2f}'.format(negative_imbalance_avg1))
+
+                # Get handles and labels for each set of lines
+                rolling_handles, rolling_labels = ax.get_legend_handles_labels()
+                imbalance_handles = [Line2D([0], [0], color='black', linestyle='--'),
+                                    Line2D([0], [0], color='blue', linestyle='--'),
+                                    Line2D([0], [0], color='orange', linestyle='--'),
+                                    Line2D([0], [0], color='red', linestyle='--')]
+                imbalance_labels = ['ST1 Negative imbalance', 'ST1 Positive imbalance',
+                                    'ST2 Negative imbalance', 'ST2 Positive imbalance']
+
+                # Create two separate legends
+                rolling_legend = ax.legend(['ST1','ST2'], loc='lower left')
+                imbalance_legend = ax.legend(imbalance_handles, imbalance_labels, loc='lower right')
+                ax.add_artist(rolling_legend)
+
+                # Set axis labels and title
+                ax.set_xlabel('Time')
+                ax.set_ylabel('Imbalance')
+                ax.set_title('Mean Daily Imbalance with Strategic Intervention')
+                st.pyplot(fig)
 if __name__ == '__main__':
        
        main()
