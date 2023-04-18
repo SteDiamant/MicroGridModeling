@@ -111,7 +111,7 @@ class EnergyMetrics:
         try:
             weekdays = self.data['DayOfWeek']
         except KeyError:
-            weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][self.data.index.dayofweek]
+            weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
         # Group the data by day of the week and calculate the mean for the specified metric
         result1 = self.data.groupby(weekdays)[metric].mean().round(2)
         
