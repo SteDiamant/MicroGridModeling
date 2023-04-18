@@ -108,8 +108,10 @@ class EnergyMetrics:
 
     def  energy_consumption_by_day(self, metric):
         # Calculate the day of the week for each timestamp
-       
-        weekdays = self.data['DayOfWeek']
+        try:
+            weekdays = self.data['DayOfWeek']
+        except KeyError:
+            pass
         # Group the data by day of the week and calculate the mean for the specified metric
         result1 = self.data.groupby(weekdays)[metric].mean().round(2)
         
