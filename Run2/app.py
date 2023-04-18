@@ -108,8 +108,8 @@ class EnergyMetrics:
 
     def  energy_consumption_by_day(self, metric):
         # Calculate the day of the week for each timestamp
+       
         weekdays = self.data['DayOfWeek']
-        
         # Group the data by day of the week and calculate the mean for the specified metric
         result1 = self.data.groupby(weekdays)[metric].mean().round(2)
         
@@ -128,8 +128,8 @@ class EnergyMetrics:
 @st.cache_resource
 def load_data():
         ##FOR DEVELOPMENT
-        ##df1 = pd.read_csv(r"strategies/strategy_0.csv")
-        ##df2 = pd.read_csv(r"strategies/strategy_0.csv")
+        #df1 = pd.read_csv(r"strategies/strategy_0.csv")
+        #df2 = pd.read_csv(r"strategies/strategy_1.csv")
         ###FOR GITHUB
         df1 = pd.read_csv(r"Run2/strategies/strategy_0.csv")
         df2 = pd.read_csv(r"Run2/strategies/strategy_1.csv")
@@ -235,11 +235,10 @@ def main():
             st.write("----------------------------------------------")  
             positive_imbalance_avg = df1[df1['Imbalnace'] > 0]['Imbalnace'].mean()
             negative_imbalance_avg = df1[df1['Imbalnace'] < 0]['Imbalnace'].mean()
+
             st.subheader(f'{choice}, by day of the week & Season')
             em = EnergyMetrics(df1)
             message,plot=em.energy_consumption_by_season(choice)
-            
-
             message_w,plot_w=em.energy_consumption_by_day(choice)
             c121, c221 = st.columns(2)
             with c121:
@@ -283,19 +282,19 @@ def main():
 
 
             st.subheader(f'{choice1},by day of the week & Season')
-            message,plot=em2.energy_consumption_by_season(choice1)
-            message_w,plot_w=em2.energy_consumption_by_day(choice1)
+            message11,plot11=em2.energy_consumption_by_season(choice1)
+            message_w11,plot_w11=em2.energy_consumption_by_day(choice1)
             c122, c222 = st.columns(2)
-            with c122:
-                table3 = pd.DataFrame(json.loads(message_w).items(), columns=['DayOfTheWeek', 'Value'])
+            with c122:  
+                table3 = pd.DataFrame(json.loads(message_w11).items(), columns=['DayOfTheWeek', 'Value1'])
                 table3['DayOfTheWeek'] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
                 st.table(table3)
-                st.write(plot_w)
+                st.write(plot_w11)
             st.write("----------------------------------------------")  
             with c222:
-                table4 = pd.DataFrame(json.loads(message).items(), columns=['Season', 'Value'])
+                table4 = pd.DataFrame(json.loads(message11).items(), columns=['Season', 'Value'])
                 st.table(table4)
-                st.pyplot(plot)
+                st.pyplot(plot11)
 
             st.subheader('**Imbalance Range With Strategy**')
             st.write("Average positive imbalance:", str(round(positive_imbalance_avg1)))
