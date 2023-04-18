@@ -122,7 +122,7 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Day of the week')
         
         # Return the markdown table and the plot
-        return f'{metric} by day of the week:{result1.to_json()}', fig
+        return f"""{metric} by day of the week:{result1.to_json()}""", fig
 
 @st.cache_resource
 def load_data():
