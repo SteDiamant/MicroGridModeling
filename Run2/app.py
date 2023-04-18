@@ -103,7 +103,7 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Season')
     
         # Return the markdown table and the plot
-        return f"""{metric} by season:\n{result.to_json()}""", fig
+        return result.to_json(), fig
  
 
     def  energy_consumption_by_day(self, metric):
@@ -115,7 +115,7 @@ class EnergyMetrics:
         
         # Create a bar chart of the energy consumption by day of the week
         fig, ax = plt.subplots()
-        fig.set_size_inches(9, 10)
+        fig.set_size_inches(7, 6)
         ax.bar(result1.index, result1.values)
         ax.set_xlabel('Day of the week')
         ax.set_xticklabels(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
@@ -123,14 +123,14 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Day of the week')
         
         # Return the markdown table and the plot
-        return f"""{metric} by day of the week:{result1.to_json()}""", fig
+        return result1.to_json(), fig
 
 @st.cache_resource
 def load_data():
-        ##FOR GITHUB
-        ##df1 = pd.read_csv(r"Run2/strategies/data_original.csv")
-        ##df2 = pd.read_csv(r"Run2/strategies/days.csv")
-        ###FOR LOCAL
+        ##FOR DEVELOPMENT
+        ##df1 = pd.read_csv(r"strategies/strategy_0.csv")
+        ##df2 = pd.read_csv(r"strategies/strategy_0.csv")
+        ###FOR GITHUB
         df1 = pd.read_csv(r"Run2/strategies/strategy_0.csv")
         df2 = pd.read_csv(r"Run2/strategies/strategy_1.csv")
         df2.rename(columns={'Unnamed: 0':'Time'},inplace=True)
@@ -238,18 +238,19 @@ def main():
             st.subheader(f'{choice}, by day of the week & Season')
             em = EnergyMetrics(df1)
             message,plot=em.energy_consumption_by_season(choice)
+            
+
             message_w,plot_w=em.energy_consumption_by_day(choice)
             c121, c221 = st.columns(2)
             with c121:
-                st.write(json.dumps(message_w))
-                
-                
+                table1 = pd.DataFrame(json.loads(message_w).items(), columns=['DayOfTheWeek', 'Value'])
+                table1['DayOfTheWeek'] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+                st.table(table1)
                 st.pyplot(plot_w)
              
             with c221:
-                st.write(json.dumps(message))
-                
-                
+                table2 = pd.DataFrame(json.loads(message).items(), columns=['Season', 'Value'])
+                st.table(table2)
                 st.pyplot(plot)
             
             st.write("----------------------------------------------") 
@@ -286,12 +287,14 @@ def main():
             message_w,plot_w=em2.energy_consumption_by_day(choice1)
             c122, c222 = st.columns(2)
             with c122:
-                st.write(json.dumps(message_w))
+                table3 = pd.DataFrame(json.loads(message_w).items(), columns=['DayOfTheWeek', 'Value'])
+                table3['DayOfTheWeek'] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+                st.table(table3)
                 st.write(plot_w)
             st.write("----------------------------------------------")  
             with c222:
-                
-                st.write(json.dumps(message))
+                table4 = pd.DataFrame(json.loads(message).items(), columns=['Season', 'Value'])
+                st.table(table4)
                 st.pyplot(plot)
 
             st.subheader('**Imbalance Range With Strategy**')
