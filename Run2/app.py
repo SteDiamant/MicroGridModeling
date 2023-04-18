@@ -365,19 +365,22 @@ def main():
         st.subheader("Strategy Efficiency")
         with st.container() as c4:
             c41,c42=st.columns([1,3])
+
             with c41:
                 st.write("**Strategy Efficiency:**", str(round(energy_kpis.count_strategy_violations(),2)))
                 import_energy_data1=df1['Energy Imported (W)'].sum()
                 import_energy_data2=df2['Energy Imported (W)'].sum()
-                st.write("**Energy Imported Without Strategy:**", str(round(import_energy_data1)))
-                st.write("**Energy Imported With Strategy:**", str(round(import_energy_data2)))
+                st.write("**Energy Saved:**", str((round(import_energy_data1)-round(import_energy_data2))/1000))
+
                 st.write("**Imported Energy Strategy Comparison Ratio:**", str(round(import_energy_data2/import_energy_data1,3)*100),'%')
                 st.write('**Imported Energyy Difference:**',str(round(import_energy_data1-import_energy_data2)),'W')
                 st.write("**Cost Savings:**", str(round(((import_energy_data1-import_energy_data2)/1000)*0.45,2)),'$')
-                total_charge_Ev_load1= df2[df2['EV Demand (W)'] > 0]['EV Demand (W)'].sum()/1000
+                total_charge_Ev_load1= df2[df2['EV Demand (W)'] > 0]['EV Demand (W)'].mean()
                 st.write("**Total Charge EV Load:**", str(round(total_charge_Ev_load1)),'W')
+                total_daily_demand1=96*df2['TotalDemand'].mean()
+                st.write("**Total Dail Demand:**", str(round(df2['TotalDemand'].mean())),'W')
                 fig,ax= plt.subplots()
-                ax.bar(['Energy Saved','Total Charge EV Load'],[import_energy_data1-import_energy_data2,total_charge_Ev_load1])
+                ax.bar(['Energy Saved','AVE Daily Demand'],[(import_energy_data1-import_energy_data2),total_daily_demand1])
                 st.pyplot(fig)
             with c42:
                 window_size = 96
