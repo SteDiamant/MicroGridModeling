@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+import json
 st. set_page_config(layout="wide")
 
 class EnergyKPIs:
@@ -118,7 +118,7 @@ class EnergyMetrics:
         ax.set_title(f'{metric} mean by Day of the week')
         
         # Return the markdown table and the plot
-        return f'Energy {metric} by day of the week:\n\n{result.to_json.value()}', fig
+        return f'Energy {metric} by day of the week:\n\n{result.to_json}', fig
 
 @st.cache_resource
 def load_data():
@@ -283,7 +283,7 @@ def main():
                 st.write(plot_w)
             st.write("----------------------------------------------")  
             with c222:
-                st.write(message)
+                st.write(json.dumps(message))
                 st.pyplot(plot)
 
             st.subheader('**Imbalance Range With Strategy**')
