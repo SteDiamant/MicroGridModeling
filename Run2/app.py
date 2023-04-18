@@ -3,6 +3,9 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import json
+from tabulate import tabulate
+
+
 st. set_page_config(layout="wide")
 
 class EnergyKPIs:
@@ -283,7 +286,8 @@ def main():
                 st.write(plot_w)
             st.write("----------------------------------------------")  
             with c222:
-                st.write(json.dumps(message))
+                table = tabulate(message, headers='keys', tablefmt='psql')
+                st.write(table)
                 st.pyplot(plot)
 
             st.subheader('**Imbalance Range With Strategy**')
