@@ -96,11 +96,11 @@ class EnergyMetrics:
         ax.set_xlabel('Season')
         ax.set_ylabel(f'{metric} mean (million units)')
         ax.set_title(f'{metric} mean by Season')
-        markdown = result.to_markdown()
+        
         # wrap the markdown in an HTML div tag with a style attribute that sets the font size
         
         # Return the markdown table and the plot
-        return f"""{metric} by season:\n\n\n{markdown}""", fig
+        return f"""{metric} by season:\n\n\n{result.to_markdown()}""", fig
  
 
     def  energy_consumption_by_day(self, metric):
