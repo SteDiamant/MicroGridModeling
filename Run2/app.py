@@ -92,14 +92,12 @@ class EnergyMetrics:
         
         # Create a bar chart of the energy consumption by season
         fig, ax = plt.subplots()
-        
+        fig.set_size_inches(9, 10)
         ax.bar(result.index, result.values)
         ax.set_xlabel('Season')
         ax.set_ylabel(f'{metric} mean (million units)')
         ax.set_title(f'{metric} mean by Season')
-        
-        # wrap the markdown in an HTML div tag with a style attribute that sets the font size
-        
+    
         # Return the markdown table and the plot
         return f"""{metric} by season:\n\n\n{result.to_markdown()}""", fig
  
