@@ -127,8 +127,8 @@ def load_data():
         ##df1 = pd.read_csv(r"Run2/strategies/data_original.csv")
         ##df2 = pd.read_csv(r"Run2/strategies/days.csv")
         ###FOR LOCAL
-        df1 = pd.read_csv(r"Run2\strategies\strategy_0.csv")
-        df2 = pd.read_csv(r"Run2\strategies\strategy_1.csv")
+        df1 = pd.read_csv(r"Run2/strategies/strategy_0.csv")
+        df2 = pd.read_csv(r"Run2/strategies/strategy_1.csv")
         df2.rename(columns={'Unnamed: 0':'Time'},inplace=True)
         df1['PV (W)']=df1['PV (W)']*327
         df1['Imbalnace']=df1['General Demand (W)']+df1['Heating Demand (W)']+df1['PV (W)']+df1['EV Demand (W)']
