@@ -16,10 +16,7 @@ st. set_page_config(layout="wide")
 
 class DataLoader():
     def load_data():
-        root_path = os.path.dirname(os.path.abspath(__file__))
-        print(root_path)
-        os.chdir(os.path.dirname('data/data_original.csv'))
-        
+        #path=os.path.join(os.getcwd(),'data')
         #print(path)
         ##THERE IS A BUG HERE WHEN I RUN THE CODE ON STREAMLIT CLOUD I HAVE TO DELETE THE {data}/data_original.csv FILE AND RUN THE CODE AGAIN
         df = pd.read_csv(r'data/data_original.csv')
