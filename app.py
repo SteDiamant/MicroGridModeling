@@ -342,6 +342,7 @@ def save_strategy(df):
     os.makefile('Run2/strategies/strategy_list.txt')
     with open('Run2/strategies/strategy_list.txt', 'a') as f:
         f.write(f'strategy_{id+1}.csv',MAX_NO_CARS,CHARGE_TIME,DISCHARGE_TIME,MOVE_CHARGING_BEFORE_PEAK_PRODUCTION,MOVE_DISCHARGING_BEFORE_PEAK_DEMAND)
+        f.close()
     
 
    
