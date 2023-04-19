@@ -334,12 +334,7 @@ class metricsCalculator():
     def total_positive_energy(df):
         return df['Imbalnace'].sum()
     
-def save_data_txt(df, MAX_NO_CARS, CHARGE_TIME, MOVE_CHARGING_BEFORE_PEAK_PRODUCTION, DISCHARGE_TIME):
-    id = len(os.listdir(r'../Run2/strategies')) 
-    df.to_csv(f'../Run2/strategies/strategy_TEST{id}.csv')
-    with open('data.txt', 'w') as f:
-        f.write(f"{id},{MAX_NO_CARS},{CHARGE_TIME},{MOVE_CHARGING_BEFORE_PEAK_PRODUCTION},{DISCHARGE_TIME}") 
-        f.close()
+
 
 def get_day_data(days, day):
     charge_profile = ProfileGenerator.create_charge_profile(days, day)
@@ -507,11 +502,11 @@ def main():
         st.markdown(f"## Energy Imported Statistics\n"
             f"* Total energy Imported: {total_imported_energy/1000:.2f} kWh\n\n"
             f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45):.2f} $ for a duration of {end-start} days\n\n")
-
+        id=len(os.listdir(r'../Run2/strategies/'))
         st.download_button(
             label="Download data as CSV",
             data=convert_df(data2),
-            file_name='TEST.csv')
+            file_name=f'TEST_{id}.csv')
            
 
     
