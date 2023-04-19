@@ -509,7 +509,7 @@ def main():
         st.download_button(
             label="Download data as CSV",
             data=convert_df(data2),
-            file_name=f'TEST_{id}.csv')
+            file_name=f'TEST_{MAX_NO_CARS,CHARGE_TIME,MOVE_CHARGING_BEFORE_PEAK_PRODUCTION,DISCHARGE_TIME,MOVE_DISCHARGING_BEFORE_PEAK_DEMAND}.csv')
 
     
 if __name__ == '__main__':
