@@ -505,11 +505,11 @@ def main():
         
         
         
-        st.write(os.getcwd())
-        if st.button('Export to Excel'):
-            st.write(os.getcwd())
-            id=len(os.listdir(os.getcwd()))
-            data2.to_csv(f'strategy{id}.csv')
+        
+        st.download_button(
+            label="Download data as CSV",
+            data=convert_df(data2),
+            file_name=f'TEST_{id}.csv')
 
     
 if __name__ == '__main__':
