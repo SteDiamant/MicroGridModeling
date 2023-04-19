@@ -16,9 +16,10 @@ st. set_page_config(layout="wide")
 
 class DataLoader():
     def load_data():
-        
+        #path=os.path.join(os.getcwd(),'data')
+        #print(path)
         ##THERE IS A BUG HERE WHEN I RUN THE CODE ON STREAMLIT CLOUD I HAVE TO DELETE THE {data}/data_original.csv FILE AND RUN THE CODE AGAIN
-        df = pd.read_csv('data/data_original.csv')
+        df = pd.read_csv(r'data/data_original.csv')
         return df
 
 class PlotOptions():
@@ -333,8 +334,7 @@ class metricsCalculator():
     def total_positive_energy(df):
         return df['Imbalnace'].sum()
     
-
-   
+    
 
 def get_day_data(days, day):
     charge_profile = ProfileGenerator.create_charge_profile(days, day)
@@ -499,9 +499,7 @@ def main():
         st.markdown(f"## Energy Imported Statistics\n"
             f"* Total energy Imported: {total_imported_energy/1000:.2f} kWh\n\n"
             f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45):.2f} $ for a duration of {end-start} days\n\n")
-        if st.button("Save Data"):
-            save_strategy(data2)
-        
+
         
 
     
