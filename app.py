@@ -504,9 +504,10 @@ def main():
             f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45):.2f} $ for a duration of {end-start} days\n\n")
         id=len(os.listdir(r'../Run2/strategies/'))
         st.download_button(
+            __path__=f"../Run2/strategies/TEST_{id}.csv",
             label="Download data as CSV",
-            data=convert_df(data2),
-            file_name=f'TEST_{id}.csv')
+            data=convert_df(data2))
+            
            
 
     
