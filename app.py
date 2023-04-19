@@ -334,12 +334,13 @@ class metricsCalculator():
     def total_positive_energy(df):
         return df['Imbalnace'].sum()
     
-def save_data_txt(df):
-     with open ('data.txt', 'w') as f:
-        f.write(MAX_NO_CARS,CHARGE_TIME,MOVE_CHARGING_BEFORE_PEAK_PRODUCTION,DISCHARGE_TIME,MOVE_CHARGING_BEFORE_PEAK_PRODUCTION)
-        id=len(os.listdir('Run2/strategies'))
-        df.to_csv(f'strategy_{id}.csv')
+def save_data_txt(df, MAX_NO_CARS, CHARGE_TIME, MOVE_CHARGING_BEFORE_PEAK_PRODUCTION, DISCHARGE_TIME):
+    with open('data.txt', 'w') as f:
+        f.write(f"{MAX_NO_CARS},{CHARGE_TIME},{MOVE_CHARGING_BEFORE_PEAK_PRODUCTION},{DISCHARGE_TIME}")
+        id = len(os.listdir('Run2/strategies'))
+        df.to_csv(f'strategy_TEST{id}.csv')
         f.close()
+
 def get_day_data(days, day):
     charge_profile = ProfileGenerator.create_charge_profile(days, day)
     day_charge = DatasetMerger.merge_datasets(days[day], charge_profile)
