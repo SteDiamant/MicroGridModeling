@@ -16,10 +16,10 @@ st. set_page_config(layout="wide")
 
 class DataLoader():
     def load_data():
-        
+        #path=os.path.join(os.getcwd(),'data')
         #print(path)
         ##THERE IS A BUG HERE WHEN I RUN THE CODE ON STREAMLIT CLOUD I HAVE TO DELETE THE {data}/data_original.csv FILE AND RUN THE CODE AGAIN
-        df = pd.read_csv(r'data\data_original.csv')
+        df = pd.read_csv(r'data/data_original.csv')
         return df
 
 class PlotOptions():
@@ -335,15 +335,12 @@ class metricsCalculator():
         return df['Imbalnace'].sum()
     
 def save_strategy(df):
-    
-    id=len(os.listdir((r'Run2/strategies')))
-    df.to_csv(f'Run2/strategies/strategy_{id+1}.csv')
+    id=len(os.listdir(('Run2\strategies')))
+    df.to_csv(f'Run2\strategies\strategy_{id+1}.csv')
     st.write('Strategy Saved')
-    os.makefile(r'Run2/strategies/strategy_list.txt')
-    with open(r'Run2/strategies/strategy_list.txt', 'a') as f:
+    with open('Run2\strategies\strategy_list.txt', 'a') as f:
         f.write(f'strategy_{id+1}.csv',MAX_NO_CARS,CHARGE_TIME,DISCHARGE_TIME,MOVE_CHARGING_BEFORE_PEAK_PRODUCTION,MOVE_DISCHARGING_BEFORE_PEAK_DEMAND)
         f.close()
-    
 
    
 
