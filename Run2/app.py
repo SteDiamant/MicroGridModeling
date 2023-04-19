@@ -131,7 +131,7 @@ class EnergyMetrics:
 def load_data():
         ##FOR DEVELOPMENT
         #df1 = pd.read_csv(r"strategies/strategy_0.csv")
-        #df2 = pd.read_csv(r"strategies/strategy_1.csv")
+        #df2 = pd.read_csv(r"strategies/strategy_0.csv")
         ###FOR GITHUB
         df1 = pd.read_csv(r"Run2/strategies/strategy_0.csv")
         df2 = pd.read_csv(r"Run2/strategies/strategy_1.csv")
