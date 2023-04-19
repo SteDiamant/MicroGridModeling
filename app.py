@@ -337,8 +337,8 @@ class metricsCalculator():
 def save_data_txt(df, MAX_NO_CARS, CHARGE_TIME, MOVE_CHARGING_BEFORE_PEAK_PRODUCTION, DISCHARGE_TIME):
     with open('data.txt', 'w') as f:
         f.write(f"{MAX_NO_CARS},{CHARGE_TIME},{MOVE_CHARGING_BEFORE_PEAK_PRODUCTION},{DISCHARGE_TIME}")
-        os.chdir('Run2')
-        id = len(os.listdir('Run2/strategies'))
+        
+        id = len(os.listdir(r'../Run2/strategies'))
         df.to_csv(f'strategy_TEST{id}.csv')
         f.close()
 
