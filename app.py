@@ -366,7 +366,7 @@ def plot_miltiple(days,day_start,day_end):
             merged_data = pd.concat([merged_data, day_data])
         merged_data.to_csv('days.csv')
         return(merged_data)
-@st.cache
+
 def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('utf-8')
@@ -502,14 +502,14 @@ def main():
         st.markdown(f"## Energy Imported Statistics\n"
             f"* Total energy Imported: {total_imported_energy/1000:.2f} kWh\n\n"
             f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45):.2f} $ for a duration of {end-start} days\n\n")
-        id=len(os.listdir(r'../Run2/strategies'))
         
-        st.download_button(
-            
-            label="Download data as CSV",
-            data=convert_df(data2),
-            file_name=f'TEST_{id}.csv')
-           
+        
+        
+        st.write(os.getcwd())
+        if st.button('Export to Excel'):
+            st.write(os.getcwd())
+            id=len(os.listdir(os.getcwd()))
+            data2.to_csv(f'strategy{id}.csv')
 
     
 if __name__ == '__main__':
