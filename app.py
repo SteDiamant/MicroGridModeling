@@ -16,6 +16,8 @@ st. set_page_config(layout="wide")
 
 class DataLoader():
     def load_data():
+        root_path = os.path.dirname(os.path.abspath(__file__))
+        print(root_path)
         os.chdir(os.path.dirname('data/data_original.csv'))
         
         #print(path)
