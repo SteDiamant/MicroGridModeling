@@ -339,7 +339,7 @@ def save_data_txt(df, MAX_NO_CARS, CHARGE_TIME, MOVE_CHARGING_BEFORE_PEAK_PRODUC
         f.write(f"{MAX_NO_CARS},{CHARGE_TIME},{MOVE_CHARGING_BEFORE_PEAK_PRODUCTION},{DISCHARGE_TIME}")
         
         id = len(os.listdir(r'../Run2/strategies'))
-        df.to_csv(f'strategy_TEST{id}.csv')
+        df.to_csv(f'../Run2/strategies/strategy_TEST{id}.csv')
         f.close()
 
 def get_day_data(days, day):
