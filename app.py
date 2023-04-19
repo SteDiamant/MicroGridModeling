@@ -505,7 +505,7 @@ def main():
         id=len(os.listdir(r'../Run2/strategies/'))
         os.chdir = r'../Run2/strategies/'
         st.download_button(
-            path=f"../Run2/strategies",
+            
             label="Download data as CSV",
             data=convert_df(data2),
             file_name=f'TEST_{id}.csv')
