@@ -371,7 +371,10 @@ def plot_miltiple(days,day_start,day_end):
             merged_data = pd.concat([merged_data, day_data])
         merged_data.to_csv('days.csv')
         return(merged_data)
-
+@st.cache
+def convert_df(df):
+    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_csv().encode('utf-8')
 def main():
 
     st.title("EV Impact on Microgrid Energy Demand Visualizer")
@@ -507,7 +510,7 @@ def main():
 
         st.download_button(
             label="Download data as CSV",
-            data=data2,
+            data=convert_df(data2),
             file_name='TEST.csv')
            
 
