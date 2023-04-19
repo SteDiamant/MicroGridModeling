@@ -505,9 +505,11 @@ def main():
             f"* Total energy Imported: {total_imported_energy/1000:.2f} kWh\n\n"
             f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45):.2f} $ for a duration of {end-start} days\n\n")
 
-        if st.button('SaveData'):
-            save_data_txt(data2,MAX_NO_CARS, CHARGE_TIME, MOVE_CHARGING_BEFORE_PEAK_PRODUCTION, DISCHARGE_TIME)
-            st.success('Data Saved')  
+        st.download_button(
+            label="Download data as CSV",
+            data=data2,
+            file_name='TEST.csv')
+           
 
     
 if __name__ == '__main__':
