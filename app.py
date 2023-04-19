@@ -334,8 +334,12 @@ class metricsCalculator():
     def total_positive_energy(df):
         return df['Imbalnace'].sum()
     
-    
-
+def save_data_txt(df):
+     with open ('data.txt', 'w') as f:
+        f.write(MAX_NO_CARS,CHARGE_TIME,MOVE_CHARGING_BEFORE_PEAK_PRODUCTION,DISCHARGE_TIME,MOVE_CHARGING_BEFORE_PEAK_PRODUCTION)
+        id=len(os.listdir('Run2/strategies'))
+        df.to_csv(f'strategy_{id}.csv')
+        f.close()
 def get_day_data(days, day):
     charge_profile = ProfileGenerator.create_charge_profile(days, day)
     day_charge = DatasetMerger.merge_datasets(days[day], charge_profile)
@@ -500,7 +504,9 @@ def main():
             f"* Total energy Imported: {total_imported_energy/1000:.2f} kWh\n\n"
             f"* Total Costs for Energy Imported For the neighborhood: {((total_imported_energy/1000)*0.45):.2f} $ for a duration of {end-start} days\n\n")
 
-        
+    if st.button('SaveData'):
+        save_data_txt(data2)
+        st.success('Data Saved')  
 
     
 if __name__ == '__main__':
