@@ -16,7 +16,7 @@ st. set_page_config(layout="wide")
 
 class DataLoader():
     def load_data():
-        os.chdir('data')
+        
         ##THERE IS A BUG HERE WHEN I RUN THE CODE ON STREAMLIT CLOUD I HAVE TO DELETE THE {data}/data_original.csv FILE AND RUN THE CODE AGAIN
         df = pd.read_csv('data/data_original.csv')
         return df
