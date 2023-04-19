@@ -337,7 +337,7 @@ class metricsCalculator():
 def save_strategy(df):
     
     id=len(os.listdir(('Run2/strategies')))
-    df.to_csv(f'Run2\strategies/strategy_{id+1}.csv')
+    df.to_csv(f'Run2/strategies/strategy_{id+1}.csv')
     st.write('Strategy Saved')
     os.makefile('Run2/strategies/strategy_list.txt')
     with open('Run2/strategies/strategy_list.txt', 'a') as f:
